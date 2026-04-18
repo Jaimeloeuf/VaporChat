@@ -75,7 +75,7 @@ async function sendNewMessage() {
               :key="message.timestamp"
               class="w-max rounded-2xl border border-gray-200 px-2 py-1 text-gray-700"
             >
-              <p>{{ message.message }}</p>
+              <pre>{{ message.message }}</pre>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ async function sendNewMessage() {
             class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 text-gray-700 placeholder-gray-400 shadow-sm outline-none"
             placeholder="Type your message here..."
             v-model="currentMessageDraft"
-            @keydown.prevent.enter="sendNewMessage"
+            @keydown.enter.exact.prevent="sendNewMessage"
           />
         </div>
       </div>
