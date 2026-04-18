@@ -96,8 +96,11 @@ async function sendNewMessage() {
           <p class="pb-1 text-sm font-medium text-gray-700">Chat</p>
           <!-- @todo Make this fixed width but scrollable within -->
           <div
-            class="flex flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 text-gray-700 shadow-sm"
+            class="flex min-h-8 flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 text-gray-700 shadow-sm"
           >
+            <p v-if="messages.length === 0" class="text-center text-sm text-gray-500">
+              ... no messages ...
+            </p>
             <div
               v-for="message in messages"
               :key="message.timestamp"
