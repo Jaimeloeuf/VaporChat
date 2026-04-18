@@ -20,12 +20,19 @@ async function startNewChat() {
   //
 }
 
+// @todo Allow user to change this
+const maxMessagesLength = 20
+
 /**
  * Adds new message to the local messages array and ensure that it is not too
  * long.
  */
 function addNewLocalMessage(message: Message) {
   messages.push(message)
+
+  while (messages.length > maxMessagesLength) {
+    messages.shift()
+  }
 }
 
 async function sendNewMessage() {
