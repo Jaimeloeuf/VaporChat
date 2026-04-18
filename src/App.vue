@@ -68,14 +68,14 @@ async function sendNewMessage() {
           <p class="pb-1 text-sm font-medium text-gray-700">Chat</p>
           <!-- @todo Make this fixed width but scrollable within -->
           <div
-            class="flex flex-col rounded-lg border border-gray-200 px-4 py-2 text-gray-700 shadow-sm"
+            class="flex flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 text-gray-700 shadow-sm"
           >
             <div
               v-for="message in messages"
               :key="message.timestamp"
-              class="w-max rounded-2xl border border-gray-200 px-2 py-1 text-gray-700"
+              class="rounded-xl border border-gray-200 px-2 py-0.5 text-gray-700"
             >
-              <pre>{{ message.message }}</pre>
+              <pre class="whitespace-pre-wrap">{{ message.message }}</pre>
             </div>
           </div>
         </div>
