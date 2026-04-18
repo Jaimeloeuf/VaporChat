@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 
 const currentMessageDraft = ref('')
 const messages = reactive<Array<Message>>([
@@ -15,6 +15,34 @@ type Message = {
   author: 'current-user' | 'other-user' | 'system'
   message: string
 }
+
+// @todo Allow user to change this
+const maxHistoryDurationInMs = 120000
+
+function isIsoDatetimeOlderThan(isoDatetime: string, olderThanTimeInSeconds: number): boolean {
+  const inputTime = new Date(isoDatetime).getTime()
+  if (isNaN(inputTime)) {
+    throw new Error('Invalid ISO datetime string')
+  }
+
+  const currentTime = Date.now()
+  return currentTime - inputTime > olderThanTimeInSeconds
+}
+
+/**
+ * Check for and remove old messages every second
+ */
+onMounted(() => {
+  setInterval(() => {
+    while (
+      messages.length > 0 &&
+      messages[0]?.timestamp !== undefined &&
+      isIsoDatetimeOlderThan(messages[0]?.timestamp, maxHistoryDurationInMs)
+    ) {
+      messages.shift()
+    }
+  }, 1000)
+})
 
 async function startNewChat() {
   //
