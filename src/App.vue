@@ -29,7 +29,10 @@ function addNewLocalMessage(message: Message) {
 }
 
 async function sendNewMessage() {
-  console.log('sending new mesage', currentMessageDraft.value)
+  if (currentMessageDraft.value === '') {
+    return
+  }
+
   const message: Message = {
     author: 'current-user',
     timestamp: new Date().toISOString(),
