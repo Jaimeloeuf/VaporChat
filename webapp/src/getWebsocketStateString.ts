@@ -1,9 +1,9 @@
 const websocketStates = {
-  undefined: 'Not connected',
-  [WebSocket.CONNECTING]: 'Connecting',
-  [WebSocket.OPEN]: 'Connected',
-  [WebSocket.CLOSING]: 'Connected',
-  [WebSocket.CLOSED]: 'Connected',
+  undefined: 'not connected',
+  [WebSocket.CONNECTING]: '... connecting ...',
+  [WebSocket.OPEN]: 'connected',
+  [WebSocket.CLOSING]: '... closing...',
+  [WebSocket.CLOSED]: 'closed',
 }
 
 export function getWebsocketStateString(websocketState?: WebSocket['readyState']) {
