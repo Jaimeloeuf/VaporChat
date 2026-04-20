@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
 import type { Message } from './Message'
+
+import { ref, reactive, onMounted } from 'vue'
+import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 
 const currentMessageDraft = ref('')
 const messages = reactive<Array<Message>>([
@@ -13,16 +15,6 @@ const messages = reactive<Array<Message>>([
 
 // @todo Allow user to change this
 const maxHistoryDurationInMs = 120000
-
-function isIsoDatetimeOlderThan(isoDatetime: string, olderThanTimeInSeconds: number): boolean {
-  const inputTime = new Date(isoDatetime).getTime()
-  if (isNaN(inputTime)) {
-    throw new Error('Invalid ISO datetime string')
-  }
-
-  const currentTime = Date.now()
-  return currentTime - inputTime > olderThanTimeInSeconds
-}
 
 /**
  * Check for and remove old messages every second
