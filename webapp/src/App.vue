@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
+import type { Message } from './Message'
 
 const currentMessageDraft = ref('')
 const messages = reactive<Array<Message>>([
@@ -9,12 +10,6 @@ const messages = reactive<Array<Message>>([
     message: 'This is a system message',
   },
 ])
-
-type Message = {
-  timestamp: string
-  author: 'current-user' | 'other-user' | 'system'
-  message: string
-}
 
 // @todo Allow user to change this
 const maxHistoryDurationInMs = 120000
