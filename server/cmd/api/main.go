@@ -52,11 +52,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	serverMux := http.NewServeMux()
+
+	serverMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello, Gopher!")
 	})
 
-	http.HandleFunc("/api/chat/new", func(w http.ResponseWriter, r *http.Request) {
+	serverMux.HandleFunc("/api/chat/new", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			chatID := uuid.New().String()
@@ -70,10 +72,10 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/ws", handler)
+	serverMux.HandleFunc("/ws", handler)
 
 	fmt.Println("Server starting on :3000...")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
+	if err := http.ListenAndServe(":3000", serverMux); err != nil {
 		panic(err)
 	}
 }
