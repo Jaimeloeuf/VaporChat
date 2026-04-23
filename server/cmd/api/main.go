@@ -58,18 +58,12 @@ func main() {
 		fmt.Fprint(w, "Hello, Gopher!")
 	})
 
-	serverMux.HandleFunc("/api/chat/new", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodPost:
-			chatID := uuid.New().String()
+	serverMux.HandleFunc("POST /api/chat/new", func(w http.ResponseWriter, r *http.Request) {
+		chatID := uuid.New().String()
 
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(map[string]string{"chatID": chatID})
-
-		default:
-			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]string{"chatID": chatID})
 	})
 
 	serverMux.HandleFunc("/ws", handler)
