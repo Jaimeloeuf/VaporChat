@@ -54,7 +54,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	serverMux := http.NewServeMux()
 
-	serverMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// "{$}" enforces an exact match for the root path only instead of making
+	// this route act as the fallback path
+	serverMux.HandleFunc("/{$}", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello, Gopher!")
 	})
 
