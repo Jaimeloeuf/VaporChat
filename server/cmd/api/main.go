@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 )
 
 // Configure the Upgrader with buffer sizes
@@ -84,8 +85,12 @@ func main() {
 		}
 	})
 
+	// cors.Default() setup the middleware with default options being
+	// all origins accepted with simple methods (GET, POST)
+	server := cors.Default().Handler(serverMux)
+
 	fmt.Println("Server starting on :3000...")
-	if err := http.ListenAndServe(":3000", serverMux); err != nil {
+	if err := http.ListenAndServe(":3000", server); err != nil {
 		panic(err)
 	}
 }
