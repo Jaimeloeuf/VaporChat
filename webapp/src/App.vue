@@ -26,13 +26,6 @@ async function startNewChat() {
   ws.value.addEventListener('error', () => {
     wsConnectionState.value = ws.value?.readyState
   })
-
-  ws.value!.send('Hello Server!')
-
-  // @todo This creates a new listener everytime...
-  ws.value.addEventListener('message', function (event) {
-    console.log('Server says:', event.data)
-  })
 }
 </script>
 
@@ -54,7 +47,7 @@ async function startNewChat() {
         </button>
       </div>
       <div v-if="ws !== null">
-        <Chat />
+        <Chat :ws="ws" />
       </div>
     </div>
   </div>
