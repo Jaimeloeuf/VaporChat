@@ -100,7 +100,8 @@ func main() {
 		// Upgrade the HTTP server connection to the WebSocket protocol
 		websocketConnection, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			fmt.Println("Upgrade error:", err)
+			log.Println("Websocket upgrade error:", err)
+			http.Error(w, "Could not upgrade to websocket connection", http.StatusBadRequest)
 			return
 		}
 		defer websocketConnection.Close()
