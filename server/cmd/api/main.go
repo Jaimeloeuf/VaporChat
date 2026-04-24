@@ -68,6 +68,22 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"chatID": chatID})
 	})
 
+	serverMux.HandleFunc("POST /api/chat/join/{chatID}", func(w http.ResponseWriter, r *http.Request) {
+		chatID, err := uuid.Parse(r.PathValue("chatID"))
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "invalid UUID format"})
+			return
+		}
+
+		fmt.Println("Received:", chatID)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]string{"status": "joined"})
+	})
+
 	serverMux.HandleFunc("/ws", handler)
 
 	fmt.Println("Server starting on :3000...")
