@@ -21,36 +21,6 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	// Upgrade the HTTP server connection to the WebSocket protocol
-	websocketConnection, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		fmt.Println("Upgrade error:", err)
-		return
-	}
-	defer websocketConnection.Close()
-	fmt.Println("Client successfully connected!")
-
-	for {
-		// Read message from browser
-		messageType, msg, err := websocketConnection.ReadMessage()
-		if err != nil {
-			log.Println("Read error:", err)
-			break
-		}
-
-		// Print incoming message
-		fmt.Printf("Received: %s\n", msg)
-
-		// Echo message back to browser
-		err = websocketConnection.WriteMessage(messageType, msg)
-		if err != nil {
-			log.Println("Write error:", err)
-			break
-		}
-	}
-}
-
 func main() {
 	serverMux := http.NewServeMux()
 
@@ -84,7 +54,35 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"status": "joined"})
 	})
 
-	serverMux.HandleFunc("/ws", handler)
+	serverMux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		// Upgrade the HTTP server connection to the WebSocket protocol
+		websocketConnection, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			fmt.Println("Upgrade error:", err)
+			return
+		}
+		defer websocketConnection.Close()
+		fmt.Println("Client successfully connected!")
+
+		for {
+			// Read message from browser
+			messageType, msg, err := websocketConnection.ReadMessage()
+			if err != nil {
+				log.Println("Read error:", err)
+				break
+			}
+
+			// Print incoming message
+			fmt.Printf("Received: %s\n", msg)
+
+			// Echo message back to browser
+			err = websocketConnection.WriteMessage(messageType, msg)
+			if err != nil {
+				log.Println("Write error:", err)
+				break
+			}
+		}
+	})
 
 	fmt.Println("Server starting on :3000...")
 	if err := http.ListenAndServe(":3000", serverMux); err != nil {
