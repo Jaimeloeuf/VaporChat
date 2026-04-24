@@ -36,6 +36,26 @@ var chatStorage = ChatStorage{
 	chats: make(map[string][2]*websocket.Conn),
 }
 
+func (chatStorage *ChatStorage) isChatIDAvailable(chatID string) bool {
+	chatStorage.Lock()
+	defer chatStorage.Unlock()
+
+	chatConnections, chatExists := chatStorage.chats[chatID]
+
+	if !chatExists {
+		return true
+	}
+
+	// Loop to find a single nil
+	for _, chatConnection := range chatConnections {
+		if chatConnection == nil {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (chatStorage *ChatStorage) setConnectionIfSpaceAvailable(chatID string, newConnection *websocket.Conn) error {
 	chatStorage.Lock()
 	defer chatStorage.Unlock()
@@ -96,6 +116,13 @@ func main() {
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
 		chatID := r.PathValue("chatID")
 		fmt.Println("Client joining:", chatID)
+
+		if !chatStorage.isChatIDAvailable(chatID) {
+			http.Error(w, "Chat ID is taken", http.StatusForbidden)
+			return
+		}
+
+		// 2. Upgrade only if space is available
 
 		// Upgrade the HTTP server connection to the WebSocket protocol
 		websocketConnection, err := upgrader.Upgrade(w, r, nil)
