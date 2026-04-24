@@ -55,7 +55,10 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"status": "joined"})
 	})
 
-	serverMux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
+		chatID := r.PathValue("chatID")
+		fmt.Println("Client joining:", chatID)
+
 		// Upgrade the HTTP server connection to the WebSocket protocol
 		websocketConnection, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
