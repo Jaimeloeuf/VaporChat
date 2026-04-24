@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import Chat from './Chat.vue'
 
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
 const ws = ref<WebSocket | null>(null)
 
 const wsConnectionState = ref<WebSocket['readyState'] | undefined>(undefined)
 
-// @todo Allow user to customise
-const websocketServerUrl = 'ws://localhost:3000/ws'
+const websocketServerUrlBuilder = (chatID: string) =>
+  `ws://localhost:3000/api/chat/join/${chatID}/websocket`
 
-onMounted(() => {
-  ws.value = new WebSocket(websocketServerUrl)
+async function startNewChat() {
+  const chatID = crypto.randomUUID()
+
+  ws.value = new WebSocket(websocketServerUrlBuilder(chatID))
   wsConnectionState.value = ws.value.readyState
 
   ws.value.addEventListener('open', () => {
@@ -24,17 +26,6 @@ onMounted(() => {
   ws.value.addEventListener('error', () => {
     wsConnectionState.value = ws.value?.readyState
   })
-})
-
-// onBeforeUnmount(() => {
-//   if (socket) socket.close();
-// });
-
-async function startNewChat() {
-  if (ws.value === null) {
-    console.log('no webserver connection now')
-    return
-  }
 
   ws.value!.send('Hello Server!')
 
@@ -62,7 +53,9 @@ async function startNewChat() {
           Start new Chat
         </button>
       </div>
-      <Chat />
+      <div v-if="ws !== null">
+        <Chat />
+      </div>
     </div>
   </div>
 </template>
