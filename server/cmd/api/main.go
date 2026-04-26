@@ -143,15 +143,25 @@ func main() {
 				break
 			}
 
+			// @todo Debug only, leave no logs in server
 			// Print incoming message
 			fmt.Printf("Received: %s\n", msg)
 
-			// Echo message back to browser
-			err = websocketConnection.WriteMessage(messageType, msg)
-			if err != nil {
-				log.Println("Write error:", err)
-				break
+			chatConnections := chatStorage.chats[chatID]
+
+			// @todo Do nothing until other party joined the chat
+			// Broadcast message to everyone in chat room
+			for _, chatConnection := range chatConnections {
+				if chatConnection == nil {
+					continue
+				}
+
+				err = chatConnection.WriteMessage(messageType, msg)
+				if err != nil {
+					log.Println("Write error:", err)
+				}
 			}
+
 		}
 	})
 
