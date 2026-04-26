@@ -39,12 +39,14 @@ async function startNewChat() {
             {{ getWebsocketStateString(wsConnectionState) }}
           </p>
         </div>
-        <button
-          class="cursor-pointer rounded-2xl bg-cyan-200 px-4 py-1 text-gray-600"
-          @click="startNewChat"
-        >
-          Start new Chat
-        </button>
+        <div>
+          <button
+            class="cursor-pointer rounded-2xl bg-cyan-200 px-4 py-2 text-gray-600"
+            @click="startNewChat"
+          >
+            Start new Chat
+          </button>
+        </div>
       </div>
       <div v-if="ws !== null">
         <Chat :ws="ws" />
