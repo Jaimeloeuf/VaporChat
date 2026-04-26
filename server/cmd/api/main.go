@@ -62,22 +62,17 @@ func (chatStorage *ChatStorage) setConnectionIfSpaceAvailable(chatID string, new
 
 	chatConnections := chatStorage.chats[chatID]
 
-	conn0 := chatConnections[0]
-	conn1 := chatConnections[1]
-
-	if conn0 != nil && conn1 != nil {
-		return errors.New("Chat room is full")
+	// Assign connection to first empty slot
+	for i, chatConnection := range chatConnections {
+		if chatConnection == nil {
+			chatConnections[i] = newConnection
+			chatStorage.chats[chatID] = chatConnections
+			return nil
+		}
 	}
 
-	if conn0 == nil {
-		chatConnections[0] = newConnection
-	} else if conn1 == nil {
-		chatConnections[1] = newConnection
-	}
+	return errors.New("Chat room is full")
 
-	chatStorage.chats[chatID] = chatConnections
-
-	return nil
 }
 
 func main() {
