@@ -122,9 +122,7 @@ func main() {
 			return
 		}
 
-		// 2. Upgrade only if space is available
-
-		// Upgrade the HTTP server connection to the WebSocket protocol
+		// Upgrade HTTP server connection to WebSocket protocol
 		websocketConnection, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println("Websocket upgrade error:", err)
@@ -137,9 +135,8 @@ func main() {
 		if err := chatStorage.setConnectionIfSpaceAvailable(chatID, websocketConnection); err != nil {
 			websocketConnection.WriteMessage(
 				websocket.CloseMessage,
-				websocket.FormatCloseMessage(websocket.CloseTryAgainLater, "Chat room full"),
+				websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Chat room full"),
 			)
-			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			return
 		}
 
