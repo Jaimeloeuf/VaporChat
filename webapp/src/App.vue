@@ -35,15 +35,24 @@ const leaveChat = () => window.location.reload()
 <template>
   <div class="p-6 md:p-12">
     <div class="flex w-full flex-col">
-      <div v-if="ws === null" class="flex w-full flex-row justify-between pb-4 align-middle">
-        <p class="text-2xl text-gray-500">VaporChat</p>
-        <div>
-          <button
-            class="cursor-pointer rounded-2xl bg-cyan-200 px-4 py-2 text-gray-600"
-            @click="startNewChat"
-          >
-            Start new Chat
-          </button>
+      <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
+        <div class="flex flex-col gap-8">
+          <p class="text-2xl text-gray-500">VaporChat</p>
+          <div class="w-xs">
+            <p class="text-gray-500">Config</p>
+            <div class="rounded-lg border border-gray-200 p-2">
+              <p class="text-gray-500">Max messages to keep in chat</p>
+              <p class="text-gray-500">Max message retention time in seconds</p>
+            </div>
+          </div>
+          <div>
+            <button
+              class="cursor-pointer rounded-2xl border border-green-300 px-4 py-1 text-green-600"
+              @click="startNewChat"
+            >
+              Start new Chat
+            </button>
+          </div>
         </div>
       </div>
       <div v-else>
