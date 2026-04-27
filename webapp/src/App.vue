@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import Chat from './Chat.vue'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
 const ws = ref<WebSocket | null>(null)
 
 const wsConnectionState = ref<WebSocket['readyState'] | undefined>(undefined)
+const isWebsocketConnected = computed(() => wsConnectionState.value === WebSocket.OPEN)
 
 const websocketServerUrlBuilder = (chatID: string) =>
   `ws://localhost:3000/api/chat/join/${chatID}/websocket`
@@ -33,12 +34,7 @@ async function startNewChat() {
   <div class="p-6 md:p-12">
     <div class="flex w-full flex-col">
       <div class="flex w-full flex-row justify-between pb-4 align-middle">
-        <div class="flex flex-col">
-          <p class="text-2xl text-gray-500">VaporChat</p>
-          <p class="text-sm font-light text-gray-500">
-            {{ getWebsocketStateString(wsConnectionState) }}
-          </p>
-        </div>
+        <p class="text-2xl text-gray-500">VaporChat</p>
         <div>
           <button
             class="cursor-pointer rounded-2xl bg-cyan-200 px-4 py-2 text-gray-600"
@@ -49,7 +45,12 @@ async function startNewChat() {
         </div>
       </div>
       <div v-if="ws !== null">
-        <Chat :ws="ws" />
+        <div>
+          <p class="text-sm font-light text-gray-500">
+            {{ getWebsocketStateString(wsConnectionState) }}
+          </p>
+        </div>
+        <Chat v-if="isWebsocketConnected" :ws="ws" />
       </div>
     </div>
   </div>
