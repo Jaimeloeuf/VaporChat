@@ -28,6 +28,8 @@ async function startNewChat() {
     wsConnectionState.value = ws.value?.readyState
   })
 }
+
+const leaveChat = () => window.location.reload()
 </script>
 
 <template>
@@ -49,10 +51,10 @@ async function startNewChat() {
           <p class="text-2xl text-gray-500">VaporChat</p>
           <div>
             <button
-              class="cursor-pointer rounded-2xl bg-cyan-200 px-4 py-2 text-gray-600"
-              @click="startNewChat"
+              class="cursor-pointer rounded-2xl border border-red-500 px-4 py-1 text-red-500"
+              @click="leaveChat"
             >
-              Start new Chat
+              leave
             </button>
           </div>
         </div>
