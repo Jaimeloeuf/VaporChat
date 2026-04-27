@@ -29,6 +29,8 @@ async function startNewChat() {
   })
 }
 
+const resetConfig = () => window.location.reload()
+
 const leaveChat = () => window.location.reload()
 </script>
 
@@ -39,7 +41,15 @@ const leaveChat = () => window.location.reload()
         <div class="flex flex-col gap-8">
           <p class="text-2xl text-gray-500">VaporChat</p>
           <div class="w-xs">
-            <p class="text-gray-500">Config</p>
+            <div class="flex flex-row justify-between pb-1">
+              <p class="text-gray-500">Config</p>
+              <button
+                class="cursor-pointer text-sm font-light text-red-400 underline"
+                @click="resetConfig"
+              >
+                reset
+              </button>
+            </div>
             <div class="rounded-lg border border-gray-200 p-2">
               <p class="text-gray-500">Max messages to keep in chat</p>
               <p class="text-gray-500">Max message retention time in seconds</p>
