@@ -35,14 +35,14 @@ const leaveChat = () => window.location.reload()
 </script>
 
 <template>
-  <div class="p-6 md:p-12">
+  <div class="p-6 text-gray-500 md:p-12">
     <div class="flex w-full flex-col">
       <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
         <div class="flex flex-col gap-8">
-          <p class="text-2xl text-gray-500">VaporChat</p>
+          <p class="text-2xl">VaporChat</p>
           <div class="w-xs">
             <div class="flex flex-row justify-between pb-1">
-              <p class="text-gray-500">Config</p>
+              <p>Config</p>
               <button
                 class="cursor-pointer text-sm font-light text-red-400 underline"
                 @click="resetConfig"
@@ -51,8 +51,8 @@ const leaveChat = () => window.location.reload()
               </button>
             </div>
             <div class="rounded-lg border border-gray-200 p-2">
-              <p class="text-gray-500">Max messages to keep in chat</p>
-              <p class="text-gray-500">Max message retention time in seconds</p>
+              <p>Max messages to keep in chat</p>
+              <p>Max message retention time in seconds</p>
             </div>
           </div>
           <div>
@@ -67,7 +67,7 @@ const leaveChat = () => window.location.reload()
       </div>
       <div v-else>
         <div class="flex w-full flex-row justify-between pb-4 align-middle">
-          <p class="text-2xl text-gray-500">VaporChat</p>
+          <p class="text-2xl">VaporChat</p>
           <div>
             <button
               class="cursor-pointer rounded-2xl border border-red-500 px-4 py-1 text-red-500"
@@ -78,7 +78,7 @@ const leaveChat = () => window.location.reload()
           </div>
         </div>
         <div>
-          <p class="text-sm font-light text-gray-500">
+          <p class="text-sm font-light">
             {{ getWebsocketStateString(wsConnectionState) }}
           </p>
         </div>
