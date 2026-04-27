@@ -76,21 +76,19 @@ async function sendNewMessage() {
 </script>
 
 <template>
-  <div>
+  <div class="text-gray-700">
     <div class="flex flex-col gap-4 md:flex-row md:justify-center">
       <div class="w-full max-w-lg">
-        <p class="pb-1 text-sm font-medium text-gray-700">Chat</p>
+        <p class="pb-1 text-sm font-medium">Chat</p>
         <!-- @todo Make this fixed width but scrollable within -->
         <div
-          class="flex min-h-8 flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 text-gray-700 shadow-sm"
+          class="flex min-h-8 flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
         >
-          <p v-if="messages.length === 0" class="text-center text-sm text-gray-500">
-            ... no messages ...
-          </p>
+          <p v-if="messages.length === 0" class="text-center text-sm">... no messages ...</p>
           <div
             v-for="message in messages"
             :key="message.timestamp"
-            class="rounded-xl border border-gray-200 px-2 py-0.5 text-gray-700"
+            class="rounded-xl border border-gray-200 px-2 py-0.5"
           >
             <pre class="whitespace-pre-wrap">{{ message.message }}</pre>
           </div>
@@ -98,13 +96,11 @@ async function sendNewMessage() {
       </div>
 
       <div class="w-full max-w-lg">
-        <label for="message" class="block pb-1 text-sm font-medium text-gray-700">
-          Your Message
-        </label>
+        <label for="message" class="block pb-1 text-sm font-medium"> Your Message </label>
         <textarea
           id="message"
           rows="4"
-          class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 text-gray-700 placeholder-gray-400 shadow-sm outline-none"
+          class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 placeholder-gray-400 shadow-sm outline-none"
           placeholder="Type your message here..."
           v-model="currentMessageDraft"
           @keydown.enter.exact.prevent="sendNewMessage"
