@@ -55,7 +55,7 @@ const leaveChat = () => window.location.reload()
               <p>Max message retention time in seconds</p>
             </div>
           </div>
-          <div>
+          <div class="text-right">
             <button
               class="cursor-pointer rounded-2xl border border-green-300 px-4 py-1 text-green-600"
               @click="startNewChat"
