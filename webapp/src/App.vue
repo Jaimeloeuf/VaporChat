@@ -4,12 +4,12 @@ import Chat from './Chat.vue'
 import { reactive, ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
-type Config = {
+type ChatConfig = {
   maxHistoryDurationInSeconds: number
   maxMessagesLength: number
 }
 
-const config = reactive<Config>({
+const chatConfig = reactive<ChatConfig>({
   maxHistoryDurationInSeconds: 120,
   maxMessagesLength: 20,
 })
@@ -64,7 +64,7 @@ const leaveChat = () => window.location.reload()
               <div>
                 <p>Max messages to keep in chat</p>
                 <input
-                  v-model="config.maxMessagesLength"
+                  v-model="chatConfig.maxMessagesLength"
                   type="number"
                   step="1"
                   min="1"
@@ -74,7 +74,7 @@ const leaveChat = () => window.location.reload()
               <div>
                 <p>Max message retention time in seconds</p>
                 <input
-                  v-model="config.maxHistoryDurationInSeconds"
+                  v-model="chatConfig.maxHistoryDurationInSeconds"
                   type="number"
                   step="1"
                   min="1"
