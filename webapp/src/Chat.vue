@@ -27,13 +27,12 @@ props.ws.addEventListener('message', function (event) {
   })
 })
 
-// @todo Allow user to change this
-const maxHistoryDurationInMs = 120000
-
 /**
  * Check for and remove old messages every second
  */
 onMounted(() => {
+  const maxHistoryDurationInMs = props.chatConfig.maxHistoryDurationInSeconds * 1000
+
   setInterval(() => {
     while (
       messages.length > 0 &&
