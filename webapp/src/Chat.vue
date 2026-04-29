@@ -44,9 +44,6 @@ onMounted(() => {
   }, 1000)
 })
 
-// @todo Allow user to change this
-const maxMessagesLength = 20
-
 /**
  * Adds new message to the local messages array and ensure that it is not too
  * long.
@@ -54,7 +51,7 @@ const maxMessagesLength = 20
 function addNewLocalMessage(message: Message) {
   messages.push(message)
 
-  while (messages.length > maxMessagesLength) {
+  while (messages.length > props.chatConfig.maxMessagesLength) {
     messages.shift()
   }
 
