@@ -4,9 +4,9 @@ import type { Message } from './Message'
 import { ref, reactive, onMounted } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 
-const props = defineProps({
-  ws: WebSocket,
-})
+const props = defineProps<{
+  ws: WebSocket
+}>()
 
 const currentMessageDraft = ref('')
 const messages = reactive<Array<Message>>([
