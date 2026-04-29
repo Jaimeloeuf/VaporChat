@@ -1,13 +1,10 @@
 <script setup lang="ts">
+import type { ChatConfig } from './ChatConfig'
+
 import Chat from './Chat.vue'
 
 import { reactive, ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
-
-type ChatConfig = {
-  maxHistoryDurationInSeconds: number
-  maxMessagesLength: number
-}
 
 const chatConfig = reactive<ChatConfig>({
   maxHistoryDurationInSeconds: 120,
