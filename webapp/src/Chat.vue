@@ -17,7 +17,7 @@ const messages = reactive<Array<Message>>([
   },
 ])
 
-props.ws?.addEventListener('message', function (event) {
+props.ws.addEventListener('message', function (event) {
   addNewLocalMessage({
     author: 'other-user',
     timestamp: new Date().toISOString(),
