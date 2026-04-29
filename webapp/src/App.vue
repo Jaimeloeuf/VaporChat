@@ -107,7 +107,7 @@ const leaveChat = () => window.location.reload()
             {{ getWebsocketStateString(wsConnectionState) }}
           </p>
         </div>
-        <Chat v-if="isWebsocketConnected" :ws="ws" />
+        <Chat v-if="isWebsocketConnected" :ws="ws" :chat-config="chatConfig" />
       </div>
     </div>
   </div>

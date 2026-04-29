@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ChatConfig } from './ChatConfig'
 import type { Message } from './Message'
 
 import { ref, reactive, onMounted } from 'vue'
@@ -6,6 +7,7 @@ import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 
 const props = defineProps<{
   ws: WebSocket
+  chatConfig: ChatConfig
 }>()
 
 const currentMessageDraft = ref('')
