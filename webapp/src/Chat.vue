@@ -99,6 +99,28 @@ async function sendNewMessage() {
 <template>
   <div class="text-gray-700">
     <div class="flex flex-col gap-4 md:flex-row md:justify-center">
+      <div class="w-xs">
+        <p class="pb-1">Chat Config</p>
+        <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
+          <div>
+            <p>Max messages to keep in chat</p>
+            <input
+              :value="props.chatConfig.maxMessagesLength"
+              class="w-full rounded border border-gray-200 p-1.5 outline-none"
+              disabled
+            />
+          </div>
+          <div>
+            <p>Max message retention time in seconds</p>
+            <input
+              :value="props.chatConfig.maxHistoryDurationInSeconds"
+              class="w-full rounded border border-gray-200 p-1.5 outline-none"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+
       <div class="w-full max-w-lg">
         <p class="pb-1 text-sm font-medium">Chat</p>
         <div
