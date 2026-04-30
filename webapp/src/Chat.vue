@@ -78,9 +78,8 @@ async function sendNewMessage() {
     <div class="flex flex-col gap-4 md:flex-row md:justify-center">
       <div class="w-full max-w-lg">
         <p class="pb-1 text-sm font-medium">Chat</p>
-        <!-- @todo Make this fixed width but scrollable within -->
         <div
-          class="flex min-h-8 flex-col gap-2 rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
+          class="flex max-h-[70dvh] min-h-8 flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
         >
           <p v-if="messages.length === 0" class="text-center text-sm">... no messages ...</p>
           <div
