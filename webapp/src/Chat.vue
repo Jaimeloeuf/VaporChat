@@ -7,7 +7,7 @@ import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 
 const props = defineProps<{
   ws: WebSocket
-  chatConfig: ChatConfig
+  chatConfig: Readonly<ChatConfig>
 }>()
 
 const messageContainer = ref<HTMLDivElement | null>(null)
