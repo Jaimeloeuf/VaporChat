@@ -49,7 +49,7 @@ const leaveChat = () => window.location.reload()
           <p class="text-2xl">VaporChat</p>
           <div class="w-xs">
             <div class="flex flex-row justify-between pb-1">
-              <p>Config</p>
+              <p>Chat Config</p>
               <button
                 class="cursor-pointer text-sm font-light text-red-400 underline"
                 @click="resetConfig"
