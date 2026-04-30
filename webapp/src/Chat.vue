@@ -103,7 +103,7 @@ async function sendNewMessage() {
         <p class="pb-1 text-sm font-medium">Chat</p>
         <div
           ref="messageContainer"
-          class="flex max-h-[70dvh] min-h-8 flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
+          class="no-scrollbar flex max-h-[70dvh] min-h-8 flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
         >
           <p v-if="messages.length === 0" class="text-center text-sm">... no messages ...</p>
           <div
@@ -130,3 +130,14 @@ async function sendNewMessage() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+  }
+}
+</style>
