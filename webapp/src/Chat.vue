@@ -2,7 +2,7 @@
 import type { ChatConfig } from './ChatConfig'
 import type { Message } from './Message'
 
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 
 const props = defineProps<{
@@ -10,6 +10,7 @@ const props = defineProps<{
   chatConfig: ChatConfig
 }>()
 
+const messageContainer = ref<HTMLDivElement | null>(null)
 const currentMessageDraft = ref('')
 const messages = reactive<Array<Message>>([
   {
@@ -18,6 +19,28 @@ const messages = reactive<Array<Message>>([
     message: 'This is a system message',
   },
 ])
+
+// Watch the messages array and scroll whenever it changes
+watch(
+  messages,
+  async function () {
+    if (messageContainer.value === null) {
+      return
+    }
+
+    // Wait for Vue to finish rendering new message in the DOM before scrolling
+    await nextTick()
+
+    messageContainer.value.scrollTo({
+      top: messageContainer.value.scrollHeight,
+      behavior: 'smooth',
+    })
+  },
+  {
+    // Ensures it fires when new items are pushed into the array
+    deep: true,
+  },
+)
 
 props.ws.addEventListener('message', function (event) {
   addNewLocalMessage({
@@ -79,6 +102,7 @@ async function sendNewMessage() {
       <div class="w-full max-w-lg">
         <p class="pb-1 text-sm font-medium">Chat</p>
         <div
+          ref="messageContainer"
           class="flex max-h-[70dvh] min-h-8 flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
         >
           <p v-if="messages.length === 0" class="text-center text-sm">... no messages ...</p>
