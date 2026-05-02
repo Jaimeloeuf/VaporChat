@@ -125,9 +125,13 @@ async function sendNewMessage() {
         <p class="pb-1 text-sm font-medium">Chat</p>
         <div
           ref="messageContainer"
-          class="no-scrollbar flex max-h-[70dvh] min-h-8 flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 px-4 py-2 shadow-sm"
+          class="no-scrollbar flex h-[70dvh] flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
+          :class="{
+            'justify-center': messages.length === 0,
+            'justify-end': messages.length !== 0,
+          }"
         >
-          <p v-if="messages.length === 0" class="text-center text-sm">... no messages ...</p>
+          <p v-if="messages.length === 0" class="text-center font-thin">... no messages ...</p>
           <div
             v-for="message in messages"
             :key="message.timestamp"
