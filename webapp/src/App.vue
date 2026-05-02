@@ -42,7 +42,7 @@ const leaveChat = () => window.location.reload()
 </script>
 
 <template>
-  <div class="p-6 text-gray-500 md:p-12">
+  <div class="mx-auto max-w-7xl p-4 text-gray-500">
     <div class="flex w-full flex-col">
       <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
         <div class="flex flex-col gap-8">
@@ -91,8 +91,13 @@ const leaveChat = () => window.location.reload()
         </div>
       </div>
       <div v-else>
-        <div class="flex w-full flex-row justify-between pb-4 align-middle">
-          <p class="text-2xl">VaporChat</p>
+        <div class="flex w-full flex-row items-center justify-between pb-4 align-middle">
+          <div>
+            <p class="text-2xl">VaporChat</p>
+            <p class="text-sm font-light">
+              {{ getWebsocketStateString(wsConnectionState) }}
+            </p>
+          </div>
           <div>
             <button
               class="cursor-pointer rounded-2xl border border-red-500 px-4 py-1 text-red-500"
@@ -101,11 +106,6 @@ const leaveChat = () => window.location.reload()
               leave
             </button>
           </div>
-        </div>
-        <div>
-          <p class="text-sm font-light">
-            {{ getWebsocketStateString(wsConnectionState) }}
-          </p>
         </div>
         <Chat v-if="isWebsocketConnected" :ws="ws" :chat-config="Object.freeze(chatConfig)" />
       </div>

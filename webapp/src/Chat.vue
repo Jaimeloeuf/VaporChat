@@ -97,10 +97,10 @@ async function sendNewMessage() {
 </script>
 
 <template>
-  <div class="text-gray-700">
+  <div class="text-gray-500">
     <div class="flex flex-col gap-4 md:flex-row md:justify-center">
       <div class="basis-1/5">
-        <p class="pb-1">Chat Config</p>
+        <p class="pb-1 text-sm font-medium">Chat Config</p>
         <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
           <div>
             <p>Max messages to keep in chat</p>
