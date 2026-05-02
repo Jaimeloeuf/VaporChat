@@ -99,7 +99,7 @@ async function sendNewMessage() {
 <template>
   <div class="text-gray-700">
     <div class="flex flex-col gap-4 md:flex-row md:justify-center">
-      <div class="w-xs">
+      <div class="basis-1/5">
         <p class="pb-1">Chat Config</p>
         <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
           <div>
@@ -121,7 +121,7 @@ async function sendNewMessage() {
         </div>
       </div>
 
-      <div class="w-full max-w-lg">
+      <div class="basis-2/5">
         <p class="pb-1 text-sm font-medium">Chat</p>
         <div
           ref="messageContainer"
@@ -138,7 +138,7 @@ async function sendNewMessage() {
         </div>
       </div>
 
-      <div class="w-full max-w-lg">
+      <div class="basis-2/5">
         <label for="message" class="block pb-1 text-sm font-medium"> Your Message </label>
         <textarea
           id="message"
