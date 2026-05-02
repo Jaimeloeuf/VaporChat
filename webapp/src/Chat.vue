@@ -12,13 +12,7 @@ const props = defineProps<{
 
 const messageContainer = ref<HTMLDivElement | null>(null)
 const currentMessageDraft = ref('')
-const messages = reactive<Array<Message>>([
-  {
-    author: 'system',
-    timestamp: new Date().toISOString(),
-    message: 'This is a system message',
-  },
-])
+const messages = reactive<Array<Message>>([])
 
 // Watch the messages array and scroll whenever it changes
 watch(
