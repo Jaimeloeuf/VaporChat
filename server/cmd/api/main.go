@@ -13,10 +13,18 @@ import (
 	"github.com/rs/cors"
 )
 
-// Configure the Upgrader with buffer sizes
-var upgrader = websocket.Upgrader{
+var websocketUpgrader = websocket.Upgrader{
+	// @todo
+	// Buffers can be tuned based on average payload size and expected
+	// concurrent connections, to find the sweet spot between smaller buffers
+	// for lower per connection memory use and larger buffers for less syscalls
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+
+	// @todo
+	// Potentially enable pool to reuse memory across connections, and to allow
+	// for higher buffer sizes, potentially the default 4096
+	// WriteBufferPool: &sync.Pool{},
 
 	// @todo Allow connections from any origin for testing
 	CheckOrigin: func(r *http.Request) bool {
@@ -118,7 +126,7 @@ func main() {
 		}
 
 		// Upgrade HTTP server connection to WebSocket protocol
-		websocketConnection, err := upgrader.Upgrade(w, r, nil)
+		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println("Websocket upgrade error:", err)
 			http.Error(w, "Could not upgrade to websocket connection", http.StatusBadRequest)
