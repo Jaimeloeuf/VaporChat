@@ -43,7 +43,7 @@ func main() {
 			return
 		}
 
-		fmt.Println("Received:", chatID)
+		log.Println("Joining:", chatID)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
@@ -52,7 +52,7 @@ func main() {
 
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
 		chatID := r.PathValue("chatID")
-		fmt.Println("Client joining:", chatID)
+		log.Println("Client connecting to:", chatID)
 
 		if !chatStorage.isChatIDAvailable(chatID) {
 			http.Error(w, "Chat ID is taken", http.StatusForbidden)
@@ -67,7 +67,7 @@ func main() {
 			return
 		}
 		defer websocketConnection.Close()
-		fmt.Println("Client successfully connected!")
+		log.Println("Client connected")
 
 		if err := chatStorage.setConnectionIfSpaceAvailable(chatID, websocketConnection); err != nil {
 			websocketConnection.WriteMessage(
