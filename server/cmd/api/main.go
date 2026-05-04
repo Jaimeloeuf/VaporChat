@@ -6,19 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 )
-
-// Create a thread-safe map structure (Go maps are not thread-safe by default)
-type ChatStorage struct {
-	sync.RWMutex
-	// Maps a string UUID to an array of exactly 2 WebSocket connections
-	chats map[string][2]*websocket.Conn
-}
 
 // @todo Have a timer to clear this regularly
 var chatStorage = ChatStorage{
