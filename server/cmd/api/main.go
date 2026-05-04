@@ -136,16 +136,17 @@ func main() {
 		}
 
 		for {
-			// Read message from browser
 			messageType, msg, err := websocketConnection.ReadMessage()
+
+			// Exiting loop will hit the defer and clean up websocket connection
 			if err != nil {
-				log.Println("Read error:", err)
+				log.Printf("Client disconnected or ws read message error: %v", err)
 				break
 			}
 
 			// @todo Debug only, leave no logs in server
 			// Print incoming message
-			fmt.Printf("Received: %s\n", msg)
+			log.Printf("Received: %s\n", msg)
 
 			chatConnections := chatStorage.chats[chatID]
 
