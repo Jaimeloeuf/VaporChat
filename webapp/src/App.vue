@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ChatConfig } from './ChatConfig'
 
+import Logo from './Logo.vue'
 import Chat from './Chat.vue'
 
 import { reactive, ref, computed } from 'vue'
@@ -46,7 +47,7 @@ const leaveChat = () => window.location.reload()
     <div class="flex w-full flex-col">
       <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
         <div class="flex flex-col gap-8">
-          <p class="text-2xl">VaporChat</p>
+          <Logo />
           <div class="w-xs">
             <div class="flex flex-row justify-between pb-1">
               <p>Chat Config</p>
@@ -93,7 +94,7 @@ const leaveChat = () => window.location.reload()
       <div v-else>
         <div class="flex w-full flex-row items-center justify-between pb-4 align-middle">
           <div>
-            <p class="text-2xl">VaporChat</p>
+            <Logo />
             <p class="text-sm font-light">
               {{ getWebsocketStateString(wsConnectionState) }}
             </p>
