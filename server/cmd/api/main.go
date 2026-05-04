@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
+
 	"fmt"
 	"log"
 	"net/http"
@@ -15,25 +15,6 @@ import (
 // @todo Have a timer to clear this regularly
 var chatStorage = ChatStorage{
 	chats: make(map[string][2]*websocket.Conn),
-}
-
-func (chatStorage *ChatStorage) setConnectionIfSpaceAvailable(chatID string, newConnection *websocket.Conn) error {
-	chatStorage.Lock()
-	defer chatStorage.Unlock()
-
-	chatConnections := chatStorage.chats[chatID]
-
-	// Assign connection to first empty slot
-	for i, chatConnection := range chatConnections {
-		if chatConnection == nil {
-			chatConnections[i] = newConnection
-			chatStorage.chats[chatID] = chatConnections
-			return nil
-		}
-	}
-
-	return errors.New("Chat room is full")
-
 }
 
 func main() {
