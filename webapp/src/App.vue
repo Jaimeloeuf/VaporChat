@@ -12,6 +12,8 @@ const chatConfig = reactive<ChatConfig>({
   maxMessagesLength: 20,
 })
 
+const joinChatID = ref('')
+
 const ws = ref<WebSocket | null>(null)
 
 const wsConnectionState = ref<WebSocket['readyState'] | undefined>(undefined)
@@ -48,6 +50,30 @@ const leaveChat = () => window.location.reload()
       <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
         <div class="flex flex-col gap-8">
           <Logo />
+          <div class="flex w-xs flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
+            <div>
+              <div class="flex flex-row items-center justify-between">
+                <p>Chat ID</p>
+                <button
+                  class="cursor-pointer text-sm font-light text-red-400 underline"
+                  @click="joinChatID = ''"
+                >
+                  reset
+                </button>
+              </div>
+              <input
+                v-model="joinChatID"
+                type="text"
+                class="w-full rounded border border-gray-200 p-1.5 outline-none"
+              />
+            </div>
+            <button
+              class="cursor-pointer rounded-2xl border border-green-400 px-4 py-1 text-green-600"
+              @click="startNewChat"
+            >
+              Join Chat
+            </button>
+          </div>
           <div class="w-xs">
             <div class="flex flex-row justify-between pb-1">
               <p>Chat Config</p>
