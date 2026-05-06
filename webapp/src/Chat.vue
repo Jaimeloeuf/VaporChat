@@ -87,6 +87,8 @@ async function sendNewMessage() {
   }
   addNewLocalMessage(message)
   currentMessageDraft.value = ''
+
+  props.ws.send(message.message)
 }
 </script>
 
