@@ -137,7 +137,7 @@ async function sendNewMessage() {
       </div>
 
       <div class="basis-2/5">
-        <label for="message" class="block pb-1 text-sm font-medium"> Your Message </label>
+        <label for="message" class="block pb-1 text-sm font-medium">Your Message</label>
         <textarea
           id="message"
           rows="4"
