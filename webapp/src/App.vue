@@ -22,6 +22,21 @@ const isWebsocketConnected = computed(() => wsConnectionState.value === WebSocke
 const websocketServerUrlBuilder = (chatID: string) =>
   `ws://localhost:3000/api/chat/join/${chatID}/websocket`
 
+async function joinChat() {
+  ws.value = new WebSocket(websocketServerUrlBuilder(joinChatID.value))
+  wsConnectionState.value = ws.value.readyState
+
+  ws.value.addEventListener('open', () => {
+    wsConnectionState.value = ws.value?.readyState
+  })
+  ws.value.addEventListener('close', () => {
+    wsConnectionState.value = ws.value?.readyState
+  })
+  ws.value.addEventListener('error', () => {
+    wsConnectionState.value = ws.value?.readyState
+  })
+}
+
 async function startNewChat() {
   const chatID = crypto.randomUUID()
 
@@ -69,7 +84,7 @@ const leaveChat = () => window.location.reload()
             </div>
             <button
               class="cursor-pointer rounded-2xl border border-green-400 px-4 py-1 text-green-600"
-              @click="startNewChat"
+              @click="joinChat"
             >
               Join Chat
             </button>
