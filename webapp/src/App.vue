@@ -22,7 +22,7 @@ const isWebsocketConnected = computed(() => wsConnectionState.value === WebSocke
 const websocketServerUrlBuilder = (chatID: string) =>
   `ws://localhost:3000/api/chat/join/${chatID}/websocket`
 
-async function setupWebsocket(chatID: string) {
+function setupWebsocket(chatID: string) {
   ws.value = new WebSocket(websocketServerUrlBuilder(chatID))
   wsConnectionState.value = ws.value.readyState
 
@@ -37,11 +37,11 @@ async function setupWebsocket(chatID: string) {
   })
 }
 
-async function joinChat() {
+function joinChat() {
   setupWebsocket(joinChatID.value)
 }
 
-async function startNewChat() {
+function startNewChat() {
   setupWebsocket(crypto.randomUUID())
 }
 
