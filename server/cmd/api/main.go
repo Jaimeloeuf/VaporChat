@@ -103,6 +103,13 @@ func main() {
 					continue
 				}
 
+				// @todo
+				// Either we have to do this, or we have to not write it in frontend and
+				// wait for it to appear back
+				if chatConnection == websocketConnection {
+					continue
+				}
+
 				err = chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
 				if err != nil {
 					log.Println("Write error:", err)
