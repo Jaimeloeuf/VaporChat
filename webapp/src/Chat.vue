@@ -88,7 +88,7 @@ async function sendNewMessage() {
   addNewLocalMessage(message)
   currentMessageDraft.value = ''
 
-  props.ws.send(message.message)
+  props.ws.send(JSON.stringify(message))
 }
 </script>
 
