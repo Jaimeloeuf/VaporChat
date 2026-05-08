@@ -94,6 +94,8 @@ func main() {
 
 			chatConnections := chatStorage.chats[chatID]
 
+			chatMessageAsByteSlice := []byte(chatMessage.Message)
+
 			// @todo Do nothing until other party joined the chat
 			// Broadcast message to everyone in chat room
 			for _, chatConnection := range chatConnections {
@@ -101,7 +103,7 @@ func main() {
 					continue
 				}
 
-				err = chatConnection.WriteMessage(websocket.TextMessage, []byte(chatMessage.Message))
+				err = chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
 				if err != nil {
 					log.Println("Write error:", err)
 				}
