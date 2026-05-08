@@ -78,7 +78,7 @@ func main() {
 		}
 
 		for {
-			messageType, msg, err := websocketConnection.ReadMessage()
+			_, msg, err := websocketConnection.ReadMessage()
 
 			// Exiting loop will hit the defer and clean up websocket connection
 			if err != nil {
@@ -99,7 +99,7 @@ func main() {
 					continue
 				}
 
-				err = chatConnection.WriteMessage(messageType, msg)
+				err = chatConnection.WriteMessage(websocket.TextMessage, msg)
 				if err != nil {
 					log.Println("Write error:", err)
 				}
