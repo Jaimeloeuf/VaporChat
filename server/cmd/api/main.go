@@ -78,8 +78,10 @@ func main() {
 		}
 
 		for {
-			_, msg, err := websocketConnection.ReadMessage()
+			var chatMessage ChatMessage
+			err := websocketConnection.ReadJSON(&chatMessage)
 
+			// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
 			// Exiting loop will hit the defer and clean up websocket connection
 			if err != nil {
 				log.Printf("Client disconnected or ws read message error: %v", err)
@@ -88,7 +90,7 @@ func main() {
 
 			// @todo Debug only, leave no logs in server
 			// Print incoming message
-			log.Printf("Received: %s\n", msg)
+			log.Printf("Received: %s\n", chatMessage.Message)
 
 			chatConnections := chatStorage.chats[chatID]
 
@@ -99,7 +101,7 @@ func main() {
 					continue
 				}
 
-				err = chatConnection.WriteMessage(websocket.TextMessage, msg)
+				err = chatConnection.WriteMessage(websocket.TextMessage, []byte(chatMessage.Message))
 				if err != nil {
 					log.Println("Write error:", err)
 				}
