@@ -99,6 +99,14 @@ async function sendNewMessage() {
         <p class="pb-1 text-sm font-medium">Chat Config</p>
         <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
           <div>
+            <p>Max number of participants</p>
+            <input
+              :value="props.chatConfig.maxNumberOfParticipants"
+              class="w-full rounded border border-gray-200 p-1.5 outline-none"
+              disabled
+            />
+          </div>
+          <div>
             <p>Max messages to keep in chat</p>
             <input
               :value="props.chatConfig.maxMessagesLength"

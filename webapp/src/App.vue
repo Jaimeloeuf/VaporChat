@@ -8,6 +8,7 @@ import { reactive, ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
 const chatConfig = reactive<ChatConfig>({
+  maxNumberOfParticipants: 2,
   maxHistoryDurationInSeconds: 120,
   maxMessagesLength: 20,
 })
@@ -91,6 +92,16 @@ const leaveChat = () => window.location.reload()
               </button>
             </div>
             <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
+              <div>
+                <p>Max number of participants</p>
+                <input
+                  v-model="chatConfig.maxNumberOfParticipants"
+                  type="number"
+                  step="1"
+                  min="1"
+                  class="w-full rounded border border-gray-200 p-1.5 outline-none"
+                />
+              </div>
               <div>
                 <p>Max messages to keep in chat</p>
                 <input
