@@ -87,7 +87,38 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Spawns the clean up function in the background with a goroutine
+func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+
+	// This goroutine runs forever in the background
+	go func() {
+		for range ticker.C {
+			log.Println("Running background ChatStorage cleanup job...")
+
+			chatStorage.Lock()
+
+			// Loop through your rooms to find empty or expired ones
+			for chatID, connections := range chatStorage.chats {
+
+				// Both slots in the array are empty/nil
+				if connections[0] == nil && connections[1] == nil {
+					log.Printf("Cleaning up empty chat room: %s", chatID)
+
+					// Delete from both maps safely under the lock
+					delete(chatStorage.chats, chatID)
+					// delete(chatStorage.chatRooms, chatID)
+				}
+			}
+
+			chatStorage.Unlock()
+		}
+	}()
+}
+
 func main() {
+	startBackgroundChatStorageCleanupWorker(5 * time.Minute)
+
 	serverMux := http.NewServeMux()
 
 	// "{$}" enforces an exact match for the root path only instead of making
