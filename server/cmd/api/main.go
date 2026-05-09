@@ -17,6 +17,75 @@ var chatStorage = ChatStorage{
 	chats: make(map[string][2]*websocket.Conn),
 }
 
+func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
+	chatID := r.PathValue("chatID")
+	log.Println("Client connecting to:", chatID)
+
+	if !chatStorage.isChatIDAvailable(chatID) {
+		http.Error(w, "Chat ID is taken", http.StatusForbidden)
+		return
+	}
+
+	// Upgrade HTTP server connection to WebSocket protocol
+	websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("Websocket upgrade error:", err)
+		http.Error(w, "Could not upgrade to websocket connection", http.StatusBadRequest)
+		return
+	}
+	defer websocketConnection.Close()
+	log.Println("Client connected")
+
+	if err := chatStorage.setConnectionIfSpaceAvailable(chatID, websocketConnection); err != nil {
+		websocketConnection.WriteMessage(
+			websocket.CloseMessage,
+			websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Chat room full"),
+		)
+		return
+	}
+
+	for {
+		var chatMessage ChatMessage
+		err := websocketConnection.ReadJSON(&chatMessage)
+
+		// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
+		// Exiting loop will hit the defer and clean up websocket connection
+		if err != nil {
+			log.Printf("Client disconnected or ws read message error: %v", err)
+			break
+		}
+
+		// @todo Debug only, leave no logs in server
+		// Print incoming message
+		log.Printf("Received: %s\n", chatMessage.Message)
+
+		chatConnections := chatStorage.chats[chatID]
+
+		chatMessageAsByteSlice := []byte(chatMessage.Message)
+
+		// @todo Do nothing until other party joined the chat
+		// Broadcast message to everyone in chat room
+		for _, chatConnection := range chatConnections {
+			if chatConnection == nil {
+				continue
+			}
+
+			// @todo
+			// Either we have to do this, or we have to not write it in frontend and
+			// wait for it to appear back
+			if chatConnection == websocketConnection {
+				continue
+			}
+
+			err = chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
+			if err != nil {
+				log.Println("Write error:", err)
+			}
+		}
+
+	}
+}
+
 func main() {
 	serverMux := http.NewServeMux()
 
@@ -50,74 +119,7 @@ func main() {
 		json.NewEncoder(w).Encode(map[string]string{"status": "joined"})
 	})
 
-	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
-		chatID := r.PathValue("chatID")
-		log.Println("Client connecting to:", chatID)
-
-		if !chatStorage.isChatIDAvailable(chatID) {
-			http.Error(w, "Chat ID is taken", http.StatusForbidden)
-			return
-		}
-
-		// Upgrade HTTP server connection to WebSocket protocol
-		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
-		if err != nil {
-			log.Println("Websocket upgrade error:", err)
-			http.Error(w, "Could not upgrade to websocket connection", http.StatusBadRequest)
-			return
-		}
-		defer websocketConnection.Close()
-		log.Println("Client connected")
-
-		if err := chatStorage.setConnectionIfSpaceAvailable(chatID, websocketConnection); err != nil {
-			websocketConnection.WriteMessage(
-				websocket.CloseMessage,
-				websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Chat room full"),
-			)
-			return
-		}
-
-		for {
-			var chatMessage ChatMessage
-			err := websocketConnection.ReadJSON(&chatMessage)
-
-			// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
-			// Exiting loop will hit the defer and clean up websocket connection
-			if err != nil {
-				log.Printf("Client disconnected or ws read message error: %v", err)
-				break
-			}
-
-			// @todo Debug only, leave no logs in server
-			// Print incoming message
-			log.Printf("Received: %s\n", chatMessage.Message)
-
-			chatConnections := chatStorage.chats[chatID]
-
-			chatMessageAsByteSlice := []byte(chatMessage.Message)
-
-			// @todo Do nothing until other party joined the chat
-			// Broadcast message to everyone in chat room
-			for _, chatConnection := range chatConnections {
-				if chatConnection == nil {
-					continue
-				}
-
-				// @todo
-				// Either we have to do this, or we have to not write it in frontend and
-				// wait for it to appear back
-				if chatConnection == websocketConnection {
-					continue
-				}
-
-				err = chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
-				if err != nil {
-					log.Println("Write error:", err)
-				}
-			}
-
-		}
-	})
+	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", handleWebsocketConnection)
 
 	// cors.Default() setup the middleware with default options being
 	// all origins accepted with simple methods (GET, POST)
