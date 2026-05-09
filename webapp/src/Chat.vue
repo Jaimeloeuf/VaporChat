@@ -100,6 +100,7 @@ async function sendNewMessage() {
         <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
           <div>
             <p>Max number of participants</p>
+            <p class="text-xs">*Default is a 2 person peer to peer chat</p>
             <input
               :value="props.chatConfig.maxNumberOfParticipants"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
@@ -108,6 +109,7 @@ async function sendNewMessage() {
           </div>
           <div>
             <p>Max messages to keep in chat</p>
+            <p class="text-xs">*Older messages will be auto deleted</p>
             <input
               :value="props.chatConfig.maxMessagesLength"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
@@ -116,6 +118,7 @@ async function sendNewMessage() {
           </div>
           <div>
             <p>Max message retention time in seconds</p>
+            <p class="text-xs">*Expired messages will be auto deleted</p>
             <input
               :value="props.chatConfig.maxHistoryDurationInSeconds"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"

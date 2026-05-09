@@ -94,6 +94,7 @@ const leaveChat = () => window.location.reload()
             <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
               <div>
                 <p>Max number of participants</p>
+                <p class="text-xs">*Default is a 2 person peer to peer chat</p>
                 <input
                   v-model="chatConfig.maxNumberOfParticipants"
                   type="number"
@@ -104,6 +105,7 @@ const leaveChat = () => window.location.reload()
               </div>
               <div>
                 <p>Max messages to keep in chat</p>
+                <p class="text-xs">*Older messages will be auto deleted</p>
                 <input
                   v-model="chatConfig.maxMessagesLength"
                   type="number"
@@ -114,6 +116,7 @@ const leaveChat = () => window.location.reload()
               </div>
               <div>
                 <p>Max message retention time in seconds</p>
+                <p class="text-xs">*Expired messages will be auto deleted</p>
                 <input
                   v-model="chatConfig.maxHistoryDurationInSeconds"
                   type="number"
