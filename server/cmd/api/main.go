@@ -157,8 +157,10 @@ func main() {
 	// all origins accepted with simple methods (GET, POST)
 	server := cors.Default().Handler(serverMux)
 
-	fmt.Println("Server starting on :3000...")
-	if err := http.ListenAndServe(":3000", server); err != nil {
+	serverPort := ":3000"
+
+	log.Printf("Server starting on %s\n", serverPort)
+	if err := http.ListenAndServe(serverPort, server); err != nil {
 		panic(err)
 	}
 }
