@@ -1,8 +1,8 @@
 package main
 
 func (chatStorage *ChatStorage) isChatIDAvailable(chatID string) bool {
-	chatStorage.Lock()
-	defer chatStorage.Unlock()
+	chatStorage.RLock()
+	defer chatStorage.RUnlock()
 
 	chatConnections, chatExists := chatStorage.chats[chatID]
 
