@@ -23,7 +23,9 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	log.Println("Client connecting to:", chatID)
 
 	if !chatStorage.isChatIDAvailable(chatID) {
-		http.Error(w, "Chat ID is taken", http.StatusForbidden)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(JSendError("Chat ID is taken"))
 		return
 	}
 
@@ -31,7 +33,9 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("Websocket upgrade error:", err)
-		http.Error(w, "Could not upgrade to websocket connection", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
 		return
 	}
 	defer websocketConnection.Close()
@@ -124,7 +128,8 @@ func main() {
 	// "{$}" enforces an exact match for the root path only instead of making
 	// this route act as the fallback path
 	serverMux.HandleFunc("/{$}", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello, Gopher!")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "Ok")
 	})
 
 	serverMux.HandleFunc("POST /api/chat/new", func(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +137,7 @@ func main() {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"chatID": chatID})
+		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": chatID}))
 	})
 
 	serverMux.HandleFunc("POST /api/chat/join/{chatID}", func(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +145,7 @@ func main() {
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "invalid UUID format"})
+			json.NewEncoder(w).Encode(JSendError("invalid UUID format"))
 			return
 		}
 
@@ -148,7 +153,7 @@ func main() {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"status": "joined"})
+		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"status": "joined"}))
 	})
 
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", handleWebsocketConnection)
