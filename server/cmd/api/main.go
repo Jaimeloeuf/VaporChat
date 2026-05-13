@@ -91,6 +91,11 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type ChatRequest struct {
+	UserID     string     `json:"userID"`
+	ChatConfig ChatConfig `json:"chatConfig"`
+}
+
 // Spawns the clean up function in the background with a goroutine
 func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
 	ticker := time.NewTicker(interval)
@@ -133,9 +138,16 @@ func main() {
 	})
 
 	serverMux.HandleFunc("POST /api/chat/new", func(w http.ResponseWriter, r *http.Request) {
-		chatID := uuid.New().String()
-
 		w.Header().Set("Content-Type", "application/json")
+
+		var requestBody ChatRequest
+		err := json.NewDecoder(r.Body).Decode(&requestBody)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(JSendError("Invalid JSON format"))
+			return
+		}
+
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": chatID}))
 	})
