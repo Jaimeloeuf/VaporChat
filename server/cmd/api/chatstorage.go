@@ -13,5 +13,5 @@ type ChatStorage struct {
 	// Maps a string UUID to an array of exactly 2 WebSocket connections
 	chats map[string][2]*websocket.Conn
 
-	chatRooms map[string]ChatRoom
+	chatRooms map[string]*ChatRoom
 }

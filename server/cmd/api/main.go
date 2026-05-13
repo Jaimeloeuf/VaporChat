@@ -15,7 +15,7 @@ import (
 
 var chatStorage = ChatStorage{
 	chats:     make(map[string][2]*websocket.Conn),
-	chatRooms: make(map[string]ChatRoom),
+	chatRooms: make(map[string]*ChatRoom),
 }
 
 func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
