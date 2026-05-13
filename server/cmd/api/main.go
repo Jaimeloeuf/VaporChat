@@ -82,6 +82,7 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		// Exiting loop will hit the defer and clean up websocket connection
 		if err != nil {
 			log.Printf("Client disconnected or ws read message error: %v", err)
+			broadcastMessage(chatID, "Other user has left", websocketConnection)
 			break
 		}
 
