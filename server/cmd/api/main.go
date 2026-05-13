@@ -18,6 +18,31 @@ var chatStorage = ChatStorage{
 	chatRooms: make(map[string]*ChatRoom),
 }
 
+func broadcastMessage(chatID string, message string, selfWebsocketConnection *websocket.Conn) {
+	chatConnections := chatStorage.chats[chatID]
+
+	chatMessageAsByteSlice := []byte(message)
+
+	// Broadcast message to everyone in chat room
+	for _, chatConnection := range chatConnections {
+		if chatConnection == nil {
+			continue
+		}
+
+		// @todo
+		// Either we have to do this, or we have to not write it in frontend and
+		// wait for it to appear back
+		if chatConnection == selfWebsocketConnection {
+			continue
+		}
+
+		err := chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
+		if err != nil {
+			log.Println("Write error:", err)
+		}
+	}
+}
+
 func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	chatID := r.PathValue("chatID")
 	log.Println("Client connecting to:", chatID)
@@ -64,30 +89,7 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		// Print incoming message
 		log.Printf("Received: %s\n", chatMessage.Message)
 
-		chatConnections := chatStorage.chats[chatID]
-
-		chatMessageAsByteSlice := []byte(chatMessage.Message)
-
-		// @todo Do nothing until other party joined the chat
-		// Broadcast message to everyone in chat room
-		for _, chatConnection := range chatConnections {
-			if chatConnection == nil {
-				continue
-			}
-
-			// @todo
-			// Either we have to do this, or we have to not write it in frontend and
-			// wait for it to appear back
-			if chatConnection == websocketConnection {
-				continue
-			}
-
-			err = chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
-			if err != nil {
-				log.Println("Write error:", err)
-			}
-		}
-
+		broadcastMessage(chatID, chatMessage.Message, websocketConnection)
 	}
 }
 
