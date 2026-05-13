@@ -148,8 +148,13 @@ func main() {
 			return
 		}
 
+		chatStorage.Lock()
+		defer chatStorage.Unlock()
+		newChatRoom := NewChatRoom(requestBody.ChatConfig)
+		chatStorage.chatRooms[newChatRoom.ID] = newChatRoom
+
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": chatID}))
+		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": newChatRoom.ID}))
 	})
 
 	serverMux.HandleFunc("POST /api/chat/join/{chatID}", func(w http.ResponseWriter, r *http.Request) {
