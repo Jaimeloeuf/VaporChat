@@ -42,8 +42,35 @@ function joinChat() {
   setupWebsocket(joinChatID.value)
 }
 
-function startNewChat() {
-  setupWebsocket(crypto.randomUUID())
+async function startNewChat() {
+  const res = await fetch(`${apiBaseURL}/api/chat/new`, {
+    method: 'POST',
+    body: JSON.stringify({
+      userID: crypto.randomUUID(),
+      chatConfig,
+    }),
+  }).then(
+    (res) =>
+      res.json() as Promise<
+        | {
+            status: 'success'
+            data: {
+              chatID: string
+            }
+          }
+        | {
+            status: 'error'
+            message: string
+          }
+      >,
+  )
+
+  if (res.status === 'error') {
+    alert('Failed to create new chat')
+    return
+  }
+
+  setupWebsocket(res.data.chatID)
 }
 
 const resetConfig = () => window.location.reload()
