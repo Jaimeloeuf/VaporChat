@@ -151,9 +151,9 @@ func main() {
 			return
 		}
 
+		newChatRoom := NewChatRoom(requestBody.ChatConfig)
 		chatStorage.Lock()
 		defer chatStorage.Unlock()
-		newChatRoom := NewChatRoom(requestBody.ChatConfig)
 		chatStorage.chatRooms[newChatRoom.ID] = newChatRoom
 
 		w.WriteHeader(http.StatusCreated)
