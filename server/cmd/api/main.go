@@ -152,9 +152,7 @@ func main() {
 		}
 
 		newChatRoom := NewChatRoom(requestBody.ChatConfig)
-		chatStorage.Lock()
-		defer chatStorage.Unlock()
-		chatStorage.chatRooms[newChatRoom.ID] = newChatRoom
+		chatStorage.AddNewChatRoom(newChatRoom)
 
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": newChatRoom.ID}))

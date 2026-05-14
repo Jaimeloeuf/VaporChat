@@ -15,3 +15,9 @@ type ChatStorage struct {
 
 	chatRooms map[string]*ChatRoom
 }
+
+func (chatStorage *ChatStorage) AddNewChatRoom(newChatRoom *ChatRoom) {
+	chatStorage.Lock()
+	defer chatStorage.Unlock()
+	chatStorage.chatRooms[newChatRoom.ID] = newChatRoom
+}
