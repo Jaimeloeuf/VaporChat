@@ -8,6 +8,7 @@ import { reactive, ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
 const chatConfig = reactive<ChatConfig>({
+  chatRoomTTL: 300,
   maxNumberOfParticipants: 2,
   maxHistoryDurationInSeconds: 120,
   maxMessagesLength: 20,
