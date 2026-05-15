@@ -121,6 +121,21 @@ const leaveChat = () => window.location.reload()
             </div>
             <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
               <div>
+                <p>Chat Room Time To Live (TTL)</p>
+                <p class="text-xs">
+                  *Default to 300 seconds / 5 mins, after which chat room will be permanently
+                  destroyed
+                </p>
+                <input
+                  v-model="chatConfig.chatRoomTTL"
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="86400"
+                  class="w-full rounded border border-gray-200 p-1.5 outline-none"
+                />
+              </div>
+              <div>
                 <p>Max number of participants</p>
                 <p class="text-xs">*Default is a 2 person peer to peer chat</p>
                 <input

@@ -99,6 +99,17 @@ async function sendNewMessage() {
         <p class="pb-1 text-sm font-medium">Chat Config</p>
         <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
           <div>
+            <p>Chat Room Time To Live (TTL)</p>
+            <p class="text-xs">
+              *Default to 300 seconds / 5 mins, after which chat room will be permanently destroyed
+            </p>
+            <input
+              :value="props.chatConfig.chatRoomTTL"
+              class="w-full rounded border border-gray-200 p-1.5 outline-none"
+              disabled
+            />
+          </div>
+          <div>
             <p>Max number of participants</p>
             <p class="text-xs">*Default is a 2 person peer to peer chat</p>
             <input
