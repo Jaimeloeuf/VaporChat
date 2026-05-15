@@ -13,6 +13,9 @@ type ChatRoom struct {
 	// Unix seconds
 	createdAt int64
 
+	// Unix seconds
+	expiresOn int64
+
 	// This is also the number of websocket connections there are currently
 	currentNumberOfParticipants uint64
 
@@ -23,9 +26,12 @@ type ChatRoom struct {
 }
 
 func NewChatRoom(chatConfig ChatConfig) *ChatRoom {
+	currentTime := time.Now().Unix()
+
 	return &ChatRoom{
 		ID:                          uuid.New().String(),
-		createdAt:                   time.Now().Unix(),
+		createdAt:                   currentTime,
+		expiresOn:                   currentTime + int64(chatConfig.ChatRoomTTL),
 		currentNumberOfParticipants: 0,
 		chatConfig:                  chatConfig,
 	}
