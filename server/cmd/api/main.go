@@ -123,13 +123,21 @@ func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
 				}
 			}
 
+			// Loop through chat rooms to delete expired ones
+			for chatID, chatRoom := range chatStorage.chatRooms {
+				if uint64(time.Now().Unix()) >= uint64(chatRoom.createdAt)+chatRoom.chatConfig.ChatRoomTTL {
+					log.Printf("Cleaning up empty chat room: %s", chatID)
+					delete(chatStorage.chatRooms, chatID)
+				}
+			}
+
 			chatStorage.Unlock()
 		}
 	}()
 }
 
 func main() {
-	startBackgroundChatStorageCleanupWorker(5 * time.Minute)
+	startBackgroundChatStorageCleanupWorker(1 * time.Second)
 
 	serverMux := http.NewServeMux()
 
