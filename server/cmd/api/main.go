@@ -125,7 +125,7 @@ func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
 
 			// Loop through chat rooms to delete expired ones
 			for chatID, chatRoom := range chatStorage.chatRooms {
-				if uint64(time.Now().Unix()) >= uint64(chatRoom.expiresOn) {
+				if uint64(time.Now().Unix()) >= chatRoom.expiresOn {
 					log.Printf("Cleaning up empty chat room: %s", chatID)
 					delete(chatStorage.chatRooms, chatID)
 				}
