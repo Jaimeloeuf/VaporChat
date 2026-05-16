@@ -14,33 +14,7 @@ import (
 )
 
 var chatStorage = ChatStorage{
-	chats:     make(map[string][2]*websocket.Conn),
 	chatRooms: make(map[string]*ChatRoom),
-}
-
-func broadcastMessage(chatID string, message string, selfWebsocketConnection *websocket.Conn) {
-	chatConnections := chatStorage.chats[chatID]
-
-	chatMessageAsByteSlice := []byte(message)
-
-	// Broadcast message to everyone in chat room
-	for _, chatConnection := range chatConnections {
-		if chatConnection == nil {
-			continue
-		}
-
-		// @todo
-		// Either we have to do this, or we have to not write it in frontend and
-		// wait for it to appear back
-		if chatConnection == selfWebsocketConnection {
-			continue
-		}
-
-		err := chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
-		if err != nil {
-			log.Println("Write error:", err)
-		}
-	}
 }
 
 func broadcastMessageToChatRoom(chatID string, message string, selfWebsocketConnection *websocket.Conn) error {
@@ -95,13 +69,6 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	defer websocketConnection.Close()
 	log.Println("Client connected")
 
-	if err := chatStorage.setConnectionIfSpaceAvailable(chatID, websocketConnection); err != nil {
-		websocketConnection.WriteMessage(
-			websocket.CloseMessage,
-			websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Chat room full"),
-		)
-		return
-	}
 	if err := chatStorage.saveConnection(chatID, websocketConnection); err != nil {
 		log.Printf("Connection refused for chat room ID %s: %v", chatID, err)
 		websocketConnection.WriteMessage(
@@ -119,7 +86,6 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		// Exiting loop will hit the defer and clean up websocket connection
 		if err != nil {
 			log.Printf("Client disconnected or ws read message error: %v", err)
-			broadcastMessage(chatID, "Other user has left", websocketConnection)
 			broadcastMessageToChatRoom(chatID, "Other user has left", websocketConnection)
 			break
 		}
@@ -128,7 +94,6 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		// Print incoming message
 		log.Printf("Received: %s\n", chatMessage.Message)
 
-		broadcastMessage(chatID, chatMessage.Message, websocketConnection)
 		broadcastMessageToChatRoom(chatID, chatMessage.Message, websocketConnection)
 	}
 }
@@ -148,19 +113,6 @@ func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
 			log.Println("Running background ChatStorage cleanup job...")
 
 			chatStorage.Lock()
-
-			// Loop through your rooms to find empty or expired ones
-			for chatID, connections := range chatStorage.chats {
-
-				// Both slots in the array are empty/nil
-				if connections[0] == nil && connections[1] == nil {
-					log.Printf("Cleaning up empty chat room: %s", chatID)
-
-					// Delete from both maps safely under the lock
-					delete(chatStorage.chats, chatID)
-					// delete(chatStorage.chatRooms, chatID)
-				}
-			}
 
 			// Loop through chat rooms to delete expired ones
 			for chatID, chatRoom := range chatStorage.chatRooms {
