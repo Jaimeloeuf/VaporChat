@@ -47,6 +47,29 @@ func broadcastMessageToChatRoom(chatID string, message string, selfWebsocketConn
 	return nil
 }
 
+func websocketLoop(websocketConnection *websocket.Conn, chatID string) {
+	defer websocketConnection.Close()
+
+	for {
+		var chatMessage ChatMessage
+		err := websocketConnection.ReadJSON(&chatMessage)
+
+		// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
+		// Exiting loop will hit the defer and clean up websocket connection
+		if err != nil {
+			log.Printf("Client disconnected or ws read message error: %v", err)
+			broadcastMessageToChatRoom(chatID, "Other user has left", websocketConnection)
+			break
+		}
+
+		// @todo Debug only, leave no logs in server
+		// Print incoming message
+		log.Printf("Received: %s\n", chatMessage.Message)
+
+		broadcastMessageToChatRoom(chatID, chatMessage.Message, websocketConnection)
+	}
+}
+
 func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	chatID := r.PathValue("chatID")
 	log.Println("Client connecting to:", chatID)
@@ -67,7 +90,6 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
 		return
 	}
-	defer websocketConnection.Close()
 	log.Println("Client connected")
 
 	if err := chatStorage.saveConnection(chatID, websocketConnection); err != nil {
@@ -79,24 +101,7 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for {
-		var chatMessage ChatMessage
-		err := websocketConnection.ReadJSON(&chatMessage)
-
-		// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
-		// Exiting loop will hit the defer and clean up websocket connection
-		if err != nil {
-			log.Printf("Client disconnected or ws read message error: %v", err)
-			broadcastMessageToChatRoom(chatID, "Other user has left", websocketConnection)
-			break
-		}
-
-		// @todo Debug only, leave no logs in server
-		// Print incoming message
-		log.Printf("Received: %s\n", chatMessage.Message)
-
-		broadcastMessageToChatRoom(chatID, chatMessage.Message, websocketConnection)
-	}
+	go websocketLoop(websocketConnection, chatID)
 }
 
 type ChatRequest struct {
