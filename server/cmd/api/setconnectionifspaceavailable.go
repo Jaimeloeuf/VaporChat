@@ -16,11 +16,11 @@ func (chatStorage *ChatStorage) saveConnection(chatID string, newConnection *web
 		return errors.New("Chat room not available")
 	}
 
-	if chatRoom.currentNumberOfParticipants >= chatRoom.chatConfig.MaxNumberOfParticipants {
+	if len(chatRoom.websocketConnections) >= int(chatRoom.chatConfig.MaxNumberOfParticipants) {
 		return errors.New("Chat room not available")
 	}
 
-	chatRoom.currentNumberOfParticipants++
 	chatRoom.websocketConnections = append(chatRoom.websocketConnections, newConnection)
+
 	return nil
 }

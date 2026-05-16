@@ -16,9 +16,6 @@ type ChatRoom struct {
 	// Unix seconds
 	expiresOn uint64
 
-	// This is also the number of websocket connections there are currently
-	currentNumberOfParticipants uint32
-
 	// Slice to track all current participants (1 per websocket connection)
 	websocketConnections []*websocket.Conn
 
@@ -29,10 +26,9 @@ func NewChatRoom(chatConfig ChatConfig) *ChatRoom {
 	currentTime := time.Now().Unix()
 
 	return &ChatRoom{
-		ID:                          uuid.New().String(),
-		createdAt:                   uint64(currentTime),
-		expiresOn:                   uint64(currentTime + int64(chatConfig.ChatRoomTTL)),
-		currentNumberOfParticipants: 0,
-		chatConfig:                  chatConfig,
+		ID:         uuid.New().String(),
+		createdAt:  uint64(currentTime),
+		expiresOn:  uint64(currentTime + int64(chatConfig.ChatRoomTTL)),
+		chatConfig: chatConfig,
 	}
 }
