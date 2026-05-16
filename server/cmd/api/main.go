@@ -73,6 +73,14 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
+	if err := chatStorage.saveConnection(chatID, websocketConnection); err != nil {
+		log.Printf("Connection refused for chat room ID %s: %v", chatID, err)
+		websocketConnection.WriteMessage(
+			websocket.CloseMessage,
+			websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Connection refused: chat room not available"),
+		)
+		return
+	}
 
 	for {
 		var chatMessage ChatMessage
