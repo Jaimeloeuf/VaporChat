@@ -43,6 +43,35 @@ func broadcastMessage(chatID string, message string, selfWebsocketConnection *we
 	}
 }
 
+func broadcastMessageToChatRoom(chatID string, message string, selfWebsocketConnection *websocket.Conn) error {
+	chatStorage.RLock()
+	defer chatStorage.RUnlock()
+
+	chatRoom, chatRoomExists := chatStorage.chatRooms[chatID]
+	if !chatRoomExists {
+		return errors.New("Chat room not available")
+	}
+
+	chatMessageAsByteSlice := []byte(message)
+
+	// Broadcast message to everyone in chat room
+	for _, chatConnection := range chatRoom.websocketConnections {
+		// @todo
+		// Either we have to do this, or we have to not write it in frontend and
+		// wait for it to appear back
+		if chatConnection == selfWebsocketConnection {
+			continue
+		}
+
+		err := chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
+		if err != nil {
+			log.Println("Write error:", err)
+		}
+	}
+
+	return nil
+}
+
 func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	chatID := r.PathValue("chatID")
 	log.Println("Client connecting to:", chatID)
@@ -91,6 +120,7 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Client disconnected or ws read message error: %v", err)
 			broadcastMessage(chatID, "Other user has left", websocketConnection)
+			broadcastMessageToChatRoom(chatID, "Other user has left", websocketConnection)
 			break
 		}
 
@@ -99,6 +129,7 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Received: %s\n", chatMessage.Message)
 
 		broadcastMessage(chatID, chatMessage.Message, websocketConnection)
+		broadcastMessageToChatRoom(chatID, chatMessage.Message, websocketConnection)
 	}
 }
 
