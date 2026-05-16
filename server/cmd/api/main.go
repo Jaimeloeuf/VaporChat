@@ -173,7 +173,7 @@ func main() {
 	})
 
 	serverMux.HandleFunc("/api/websocket", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Client connecting with websocket")
+		log.Println("Client connecting via websocket")
 
 		// Upgrade HTTP server connection to WebSocket protocol
 		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
@@ -184,10 +184,7 @@ func main() {
 			json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
 			return
 		}
-		defer websocketConnection.Close()
-		log.Println("Client connected")
-
-		// @todo Here should hand off to a background goroutine
+		log.Println("Client connected via websocket")
 	})
 
 	// cors.Default() setup the middleware with default options being
