@@ -70,40 +70,6 @@ func websocketLoop(websocketConnection *websocket.Conn, chatID string) {
 	}
 }
 
-func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
-	chatID := r.PathValue("chatID")
-	log.Println("Client connecting to:", chatID)
-
-	// if !chatStorage.isChatIDAvailable(chatID) {
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusForbidden)
-	// 	json.NewEncoder(w).Encode(JSendError("Chat ID is taken"))
-	// 	return
-	// }
-
-	// Upgrade HTTP server connection to WebSocket protocol
-	websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println("Websocket upgrade error:", err)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
-		return
-	}
-	log.Println("Client connected")
-
-	if err := chatStorage.saveConnection(chatID, websocketConnection); err != nil {
-		log.Printf("Connection refused for chat room ID %s: %v", chatID, err)
-		websocketConnection.WriteMessage(
-			websocket.CloseMessage,
-			websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Connection refused: chat room not available"),
-		)
-		return
-	}
-
-	go websocketLoop(websocketConnection, chatID)
-}
-
 type ChatRequest struct {
 	UserID     string     `json:"userID"`
 	ChatConfig ChatConfig `json:"chatConfig"`
@@ -179,7 +145,32 @@ func main() {
 		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"status": "joined"}))
 	})
 
-	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", handleWebsocketConnection)
+	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
+		chatID := r.PathValue("chatID")
+		log.Println("Client connecting to:", chatID)
+
+		// Upgrade HTTP server connection to WebSocket protocol
+		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Println("Websocket upgrade error:", err)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
+			return
+		}
+		log.Println("Client connected")
+
+		if err := chatStorage.saveConnection(chatID, websocketConnection); err != nil {
+			log.Printf("Connection refused for chat room ID %s: %v", chatID, err)
+			websocketConnection.WriteMessage(
+				websocket.CloseMessage,
+				websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Connection refused: chat room not available"),
+			)
+			return
+		}
+
+		go websocketLoop(websocketConnection, chatID)
+	})
 
 	serverMux.HandleFunc("/api/websocket", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Client connecting with websocket")
