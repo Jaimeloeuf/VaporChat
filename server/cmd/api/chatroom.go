@@ -17,7 +17,7 @@ type ChatRoom struct {
 	expiresOn uint64
 
 	// This is also the number of websocket connections there are currently
-	currentNumberOfParticipants uint64
+	currentNumberOfParticipants uint32
 
 	// Slice to track all current participants (1 per websocket connection)
 	websocketConnections []*websocket.Conn
