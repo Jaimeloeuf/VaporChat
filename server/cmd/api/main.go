@@ -76,12 +76,12 @@ func handleWebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	chatID := r.PathValue("chatID")
 	log.Println("Client connecting to:", chatID)
 
-	if !chatStorage.isChatIDAvailable(chatID) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusForbidden)
-		json.NewEncoder(w).Encode(JSendError("Chat ID is taken"))
-		return
-	}
+	// if !chatStorage.isChatIDAvailable(chatID) {
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	w.WriteHeader(http.StatusForbidden)
+	// 	json.NewEncoder(w).Encode(JSendError("Chat ID is taken"))
+	// 	return
+	// }
 
 	// Upgrade HTTP server connection to WebSocket protocol
 	websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
