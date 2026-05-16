@@ -176,6 +176,24 @@ func main() {
 
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", handleWebsocketConnection)
 
+	serverMux.HandleFunc("/api/websocket", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Client connecting with websocket")
+
+		// Upgrade HTTP server connection to WebSocket protocol
+		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Println("Websocket upgrade error:", err)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
+			return
+		}
+		defer websocketConnection.Close()
+		log.Println("Client connected")
+
+		// @todo Here should hand off to a background goroutine
+	})
+
 	// cors.Default() setup the middleware with default options being
 	// all origins accepted with simple methods (GET, POST)
 	server := cors.Default().Handler(serverMux)
