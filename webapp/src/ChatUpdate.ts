@@ -26,10 +26,16 @@ export interface ChatUpdateNewMessage extends BaseChatUpdate {
   }
 }
 
-// @todo Support Delete message
+export interface ChatUpdateMessageDelete extends BaseChatUpdate {
+  type: 'message-delete'
+  payload: {
+    messageID: string
+  }
+}
 
 export type ChatUpdate =
   | ChatUpdateNewStatusJoinRoom
   | ChatUpdateNewStatusLeaveRoom
   | ChatUpdateNewMessage
+  | ChatUpdateMessageDelete
   | ChatUpdateTyping
