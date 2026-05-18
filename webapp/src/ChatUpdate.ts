@@ -19,7 +19,7 @@ export interface ChatUpdateTyping extends BaseChatUpdate {
   type: 'typing'
 }
 
-export interface ChatUpdateNewMessage extends BaseChatUpdate {
+export interface ChatUpdateMessageNew extends BaseChatUpdate {
   type: 'message-new'
   payload: {
     message: string
@@ -36,6 +36,6 @@ export interface ChatUpdateMessageDelete extends BaseChatUpdate {
 export type ChatUpdate =
   | ChatUpdateNewStatusJoinRoom
   | ChatUpdateNewStatusLeaveRoom
-  | ChatUpdateNewMessage
-  | ChatUpdateMessageDelete
   | ChatUpdateTyping
+  | ChatUpdateMessageNew
+  | ChatUpdateMessageDelete
