@@ -162,6 +162,8 @@ func main() {
 			return
 		}
 		log.Println("Client connected via websocket")
+
+		go websocketReaderLoop(websocketConnection)
 	})
 
 	// cors.Default() setup the middleware with default options being
