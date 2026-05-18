@@ -14,16 +14,16 @@ export interface ChatUpdateNewStatusLeaveRoom extends BaseChatUpdate {
   type: 'status-leave-room'
 }
 
-export interface ChatUpdateNewMessage extends BaseChatUpdate {
-  type: 'message'
-  payload: {
-    message: string
-  }
-}
-
 // @todo In UI show for 2s from the last time of receiving this update
 export interface ChatUpdateTyping extends BaseChatUpdate {
   type: 'typing'
+}
+
+export interface ChatUpdateNewMessage extends BaseChatUpdate {
+  type: 'message-new'
+  payload: {
+    message: string
+  }
 }
 
 // @todo Support Delete message
