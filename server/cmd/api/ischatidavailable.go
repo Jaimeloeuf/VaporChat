@@ -1,21 +1,10 @@
 package main
 
-// func (chatStorage *ChatStorage) isChatIDAvailable(chatID string) bool {
-// 	chatStorage.RLock()
-// 	defer chatStorage.RUnlock()
+// @todo This should be a method on chatRoom after chatRoom have its own independent lock
+func (chatStorage *ChatStorage) isChatIDAvailable(chatID string) bool {
+	chatStorage.RLock()
+	defer chatStorage.RUnlock()
 
-// 	chatConnections, chatExists := chatStorage.chats[chatID]
-
-// 	if !chatExists {
-// 		return true
-// 	}
-
-// 	// Loop to find a single nil
-// 	for _, chatConnection := range chatConnections {
-// 		if chatConnection == nil {
-// 			return true
-// 		}
-// 	}
-
-// 	return false
-// }
+	_, chatRoomExists := chatStorage.chatRooms[chatID]
+	return !chatRoomExists
+}
