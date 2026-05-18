@@ -16,7 +16,9 @@ export interface ChatUpdateNewStatusLeaveRoom extends BaseChatUpdate {
 
 export interface ChatUpdateNewMessage extends BaseChatUpdate {
   type: 'message'
-  message: string
+  payload: {
+    message: string
+  }
 }
 
 // @todo In UI show for 2s from the last time of receiving this update
