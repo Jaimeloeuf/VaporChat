@@ -1,4 +1,4 @@
-module github.com
+module github.com/Jaimeloeuf/VaporChat
 
 go 1.26.2
 
