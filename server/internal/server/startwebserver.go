@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Jaimeloeuf/VaporChat/internal/jsend"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
@@ -28,7 +29,7 @@ func StartWebServer() {
 		err := json.NewDecoder(r.Body).Decode(&requestBody)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(JSendError("Invalid JSON format"))
+			json.NewEncoder(w).Encode(jsend.Error("Invalid JSON format"))
 			return
 		}
 
@@ -36,7 +37,7 @@ func StartWebServer() {
 		chatStorage.AddNewChatRoom(newChatRoom)
 
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"chatID": newChatRoom.ID}))
+		json.NewEncoder(w).Encode(jsend.Success(map[string]string{"chatID": newChatRoom.ID}))
 	})
 
 	serverMux.HandleFunc("POST /api/chat/join/{chatID}", func(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +45,7 @@ func StartWebServer() {
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(JSendError("invalid UUID format"))
+			json.NewEncoder(w).Encode(jsend.Error("invalid UUID format"))
 			return
 		}
 
@@ -52,7 +53,7 @@ func StartWebServer() {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(JSendSuccess(map[string]string{"status": "joined"}))
+		json.NewEncoder(w).Encode(jsend.Success(map[string]string{"status": "joined"}))
 	})
 
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +63,7 @@ func StartWebServer() {
 		if !chatStorage.isChatIDAvailable(chatID) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(JSendError("Chat ID is taken"))
+			json.NewEncoder(w).Encode(jsend.Error("Chat ID is taken"))
 			return
 		}
 
@@ -72,7 +73,7 @@ func StartWebServer() {
 			log.Println("Websocket upgrade error:", err)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
+			json.NewEncoder(w).Encode(jsend.Error("Could not upgrade to websocket connection"))
 			return
 		}
 		log.Println("Client connected")
@@ -98,7 +99,7 @@ func StartWebServer() {
 			log.Println("Websocket upgrade error:", err)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(JSendError("Could not upgrade to websocket connection"))
+			json.NewEncoder(w).Encode(jsend.Error("Could not upgrade to websocket connection"))
 			return
 		}
 		log.Println("Client connected via websocket")

@@ -1,6 +1,6 @@
-package server
+package jsend
 
-type JSendResponse[T any] struct {
+type Response[T any] struct {
 	// enum of "success" | "fail" | "error"
 	Status string `json:"status"`
 
@@ -19,22 +19,22 @@ type JSendResponse[T any] struct {
 	Code *int `json:"code,omitempty"`
 }
 
-func JSendSuccess[T any](data T) JSendResponse[T] {
-	return JSendResponse[T]{
+func Success[T any](data T) Response[T] {
+	return Response[T]{
 		Status: "success",
 		Data:   &data,
 	}
 }
 
-func JSendFail[T any](data T) JSendResponse[T] {
-	return JSendResponse[T]{
+func Fail[T any](data T) Response[T] {
+	return Response[T]{
 		Status: "fail",
 		Data:   &data,
 	}
 }
 
-func JSendError(message string) JSendResponse[any] {
-	return JSendResponse[any]{
+func Error(message string) Response[any] {
+	return Response[any]{
 		Status:  "error",
 		Message: &message,
 		Code:    nil,
