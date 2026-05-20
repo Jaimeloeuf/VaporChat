@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 )
 
 // Spawns the clean up function in the background with a goroutine
-func startBackgroundChatStorageCleanupWorker(interval time.Duration) {
+func StartBackgroundChatStorageCleanupWorker(interval time.Duration) {
 	ticker := time.NewTicker(interval)
 
 	// This goroutine runs forever in the background

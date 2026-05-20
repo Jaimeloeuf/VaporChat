@@ -1,4 +1,4 @@
-package main
+package server
 
 // @todo This should be a method on chatRoom after chatRoom have its own independent lock
 func (chatStorage *ChatStorage) isChatIDAvailable(chatID string) bool {

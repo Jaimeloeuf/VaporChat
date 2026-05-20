@@ -1,4 +1,4 @@
-package main
+package server
 
 import "sync"
 
@@ -13,4 +13,8 @@ func (chatStorage *ChatStorage) AddNewChatRoom(newChatRoom *ChatRoom) {
 	chatStorage.Lock()
 	defer chatStorage.Unlock()
 	chatStorage.chatRooms[newChatRoom.ID] = newChatRoom
+}
+
+var chatStorage = ChatStorage{
+	chatRooms: make(map[string]*ChatRoom),
 }

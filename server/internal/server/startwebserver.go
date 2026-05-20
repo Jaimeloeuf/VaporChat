@@ -11,7 +11,7 @@ import (
 	"github.com/rs/cors"
 )
 
-func startWebServer() {
+func StartWebServer() {
 	serverMux := http.NewServeMux()
 
 	// "{$}" enforces an exact match for the root path only instead of making

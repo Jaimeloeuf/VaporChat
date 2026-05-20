@@ -1,4 +1,4 @@
-package main
+package server
 
 type JSendResponse[T any] struct {
 	// enum of "success" | "fail" | "error"

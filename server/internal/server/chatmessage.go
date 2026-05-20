@@ -1,4 +1,4 @@
-package main
+package server
 
 type ChatMessage struct {
 	Timestamp string `json:"timestamp"`
