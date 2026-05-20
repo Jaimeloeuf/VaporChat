@@ -25,7 +25,10 @@ type ChatRequest struct {
 
 func main() {
 	startBackgroundChatStorageCleanupWorker(1 * time.Second)
+	startWebServer()
+}
 
+func startWebServer() {
 	serverMux := http.NewServeMux()
 
 	// "{$}" enforces an exact match for the root path only instead of making
