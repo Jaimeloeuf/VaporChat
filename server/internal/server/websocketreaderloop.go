@@ -64,12 +64,12 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 	}()
 
 	for {
-		log.Printf("[ChatUpdate] incoming")
-
 		// Read raw message bytes from WebSocket connection
 		// We use ReadMessage instead of ReadJSON to preserve raw bytes for
 		// `json.RawMessage` parsing later
 		messageType, rawBytes, err := websocketConnection.ReadMessage()
+
+		log.Printf("[ChatUpdate] incoming")
 
 		// Exiting loop will hit the defer and clean up websocket connection
 		if err != nil {
