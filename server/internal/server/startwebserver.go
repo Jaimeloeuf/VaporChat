@@ -43,13 +43,6 @@ func StartWebServer() {
 		chatID := r.PathValue("chatID")
 		log.Println("Client connecting to:", chatID)
 
-		if !chatStorage.isChatIDAvailable(chatID) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(jsend.Error("Chat ID is taken"))
-			return
-		}
-
 		// Upgrade HTTP server connection to WebSocket protocol
 		websocketConnection, err := websocketUpgrader.Upgrade(w, r, nil)
 		if err != nil {
