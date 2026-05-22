@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/Jaimeloeuf/VaporChat/internal/jsend"
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 )
@@ -38,22 +37,6 @@ func StartWebServer() {
 
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(jsend.Success(map[string]string{"chatID": newChatRoom.ID}))
-	})
-
-	serverMux.HandleFunc("POST /api/chat/join/{chatID}", func(w http.ResponseWriter, r *http.Request) {
-		chatID, err := uuid.Parse(r.PathValue("chatID"))
-		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(jsend.Error("invalid UUID format"))
-			return
-		}
-
-		log.Println("Joining:", chatID)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(jsend.Success(map[string]string{"status": "joined"}))
 	})
 
 	serverMux.HandleFunc("/api/chat/join/{chatID}/websocket", func(w http.ResponseWriter, r *http.Request) {
