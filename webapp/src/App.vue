@@ -6,6 +6,7 @@ import Chat from './Chat.vue'
 
 import { reactive, ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
+import { getRandomAnimalName } from './getRandomAnimalName'
 
 const chatConfig = reactive<ChatConfig>({
   chatRoomTTL: 300,
@@ -15,6 +16,7 @@ const chatConfig = reactive<ChatConfig>({
 })
 
 const joinChatID = ref('')
+const username = ref(`Anonymous ${getRandomAnimalName()}`)
 
 const ws = ref<WebSocket | null>(null)
 
@@ -120,6 +122,17 @@ const leaveChat = () => window.location.reload()
               </button>
             </div>
             <div class="flex flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
+              <div>
+                <p>Username</p>
+                <p class="text-xs">
+                  *Temporary username that will be deleted once you leave the chat room
+                </p>
+                <input
+                  v-model="username"
+                  type="text"
+                  class="w-full rounded border border-gray-200 p-1.5 outline-none"
+                />
+              </div>
               <div>
                 <p>Chat Room Time To Live (TTL)</p>
                 <p class="text-xs">
