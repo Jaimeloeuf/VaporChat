@@ -37,7 +37,7 @@ const leaveChat = () => window.location.reload()
 <template>
   <div class="mx-auto max-w-7xl p-4 text-gray-500">
     <div class="flex w-full flex-col">
-      <div v-if="ws === null" class="flex h-[80dvh] w-full flex-col items-center justify-center">
+      <div v-if="websocket === null" class="flex w-full flex-col items-center justify-center">
         <div class="flex flex-col gap-8">
           <Logo />
           <div class="flex w-xs flex-col gap-4 rounded-lg border border-gray-200 px-2 py-4 shadow">
