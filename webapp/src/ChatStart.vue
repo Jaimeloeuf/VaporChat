@@ -158,11 +158,7 @@ const leaveChat = () => window.location.reload()
             </button>
           </div>
         </div>
-        <Chat
-          v-if="isWebsocketConnected"
-          :ws="websocket"
-          :chat-config="Object.freeze(chatConfig)"
-        />
+        <Chat v-if="isWebsocketConnected" :chat-config="Object.freeze(chatConfig)" />
       </div>
     </div>
   </div>

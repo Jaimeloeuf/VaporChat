@@ -6,10 +6,10 @@ import { ref, reactive, onMounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 import { useWebsocket } from './useWebsocket.ts'
 
-const { websocket } = useWebsocket()
+const { getWebsocket } = useWebsocket()
+const websocket = getWebsocket()
 
 const props = defineProps<{
-  ws: WebSocket
   chatConfig: Readonly<ChatConfig>
 }>()
 
@@ -39,7 +39,7 @@ watch(
   },
 )
 
-props.ws.addEventListener('message', function (event) {
+websocket.addEventListener('message', function (event) {
   addNewLocalMessage({
     author: 'other-user',
     timestamp: new Date().toISOString(),
@@ -91,7 +91,7 @@ async function sendNewMessage() {
   addNewLocalMessage(message)
   currentMessageDraft.value = ''
 
-  props.ws.send(JSON.stringify(message))
+  websocket.send(JSON.stringify(chatUpdate))
 }
 </script>
 
