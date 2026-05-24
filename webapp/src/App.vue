@@ -2,6 +2,7 @@
 import type { ChatConfig } from './ChatConfig'
 
 import Logo from './Logo.vue'
+import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import Chat from './Chat.vue'
 
 import { reactive, ref } from 'vue'
@@ -18,8 +19,7 @@ const chatConfig = reactive<ChatConfig>({
 const joinChatID = ref('')
 const username = ref(`Anonymous ${getRandomAnimalName()}`)
 
-const { setupWebsocket, websocket, websocketConnectionStateString, isWebsocketConnected } =
-  useWebsocket()
+const { setupWebsocket, websocket, isWebsocketConnected } = useWebsocket()
 
 function joinChat() {
   setupWebsocket()
@@ -148,12 +148,7 @@ const leaveChat = () => window.location.reload()
       </div>
       <div v-else>
         <div class="flex w-full flex-row items-center justify-between pb-4 align-middle">
-          <div>
-            <Logo />
-            <p class="text-sm font-light">
-              {{ websocketConnectionStateString }}
-            </p>
-          </div>
+          <LogoWithConnectionStatus />
           <div>
             <button
               class="cursor-pointer rounded-2xl border border-red-500 px-4 py-1 text-red-500"
