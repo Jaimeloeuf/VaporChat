@@ -4,6 +4,9 @@ import type { Message } from './Message'
 
 import { ref, reactive, onMounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
+import { useWebsocket } from './useWebsocket.ts'
+
+const { websocket } = useWebsocket()
 
 const props = defineProps<{
   ws: WebSocket

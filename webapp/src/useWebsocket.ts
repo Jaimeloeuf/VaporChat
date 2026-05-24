@@ -26,10 +26,19 @@ function setupWebsocket() {
   })
 }
 
+function getWebsocket() {
+  if (websocket.value === null) {
+    throw new Error('Websocket not expected to be null')
+  }
+
+  return websocket.value
+}
+
 export function useWebsocket() {
   return {
     setupWebsocket,
     websocket,
+    getWebsocket,
     websocketConnectionState,
     websocketConnectionStateString,
     isWebsocketConnected,
