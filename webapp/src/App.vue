@@ -4,9 +4,9 @@ import type { ChatConfig } from './ChatConfig'
 import Logo from './Logo.vue'
 import Chat from './Chat.vue'
 
-import { reactive, ref, computed } from 'vue'
-import { getWebsocketStateString } from './getWebsocketStateString'
+import { reactive, ref } from 'vue'
 import { getRandomAnimalName } from './getRandomAnimalName'
+import { useWebsocket } from './useWebsocket.ts'
 
 const chatConfig = reactive<ChatConfig>({
   chatRoomTTL: 300,
@@ -18,26 +18,8 @@ const chatConfig = reactive<ChatConfig>({
 const joinChatID = ref('')
 const username = ref(`Anonymous ${getRandomAnimalName()}`)
 
-const ws = ref<WebSocket | null>(null)
-
-const wsConnectionState = ref<WebSocket['readyState'] | undefined>(undefined)
-const isWebsocketConnected = computed(() => wsConnectionState.value === WebSocket.OPEN)
-
-function setupWebsocket() {
-  ws.value = new WebSocket('ws://localhost:3000/api/websocket')
-
-  wsConnectionState.value = ws.value.readyState
-
-  ws.value.addEventListener('open', () => {
-    wsConnectionState.value = ws.value?.readyState
-  })
-  ws.value.addEventListener('close', () => {
-    wsConnectionState.value = ws.value?.readyState
-  })
-  ws.value.addEventListener('error', () => {
-    wsConnectionState.value = ws.value?.readyState
-  })
-}
+const { setupWebsocket, websocket, websocketConnectionStateString, isWebsocketConnected } =
+  useWebsocket()
 
 function joinChat() {
   setupWebsocket()
@@ -169,7 +151,7 @@ const leaveChat = () => window.location.reload()
           <div>
             <Logo />
             <p class="text-sm font-light">
-              {{ getWebsocketStateString(wsConnectionState) }}
+              {{ websocketConnectionStateString }}
             </p>
           </div>
           <div>
@@ -181,7 +163,11 @@ const leaveChat = () => window.location.reload()
             </button>
           </div>
         </div>
-        <Chat v-if="isWebsocketConnected" :ws="ws" :chat-config="Object.freeze(chatConfig)" />
+        <Chat
+          v-if="isWebsocketConnected"
+          :ws="websocket"
+          :chat-config="Object.freeze(chatConfig)"
+        />
       </div>
     </div>
   </div>
