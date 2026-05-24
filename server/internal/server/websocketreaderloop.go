@@ -14,6 +14,10 @@ type ChatUpdateEnvelope struct {
 	Payload   json.RawMessage `json:"payload,omitempty"`
 }
 
+type ChatUpdatePayloadRoomCreate struct {
+	ChatConfig ChatConfig `json:"chatConfig"`
+}
+
 type ChatUpdatePayloadMessageNew struct {
 	Message string `json:"message"`
 }
@@ -78,6 +82,17 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 
 		// Switch based on the polymorphic 'Type' field
 		switch chatUpdateEnvelope.Type {
+
+		case "room-create":
+			var chatUpdatePayload ChatUpdatePayloadRoomCreate
+			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
+				log.Printf("Malformed %s payload: %v", chatUpdateEnvelope.Type, err)
+				continue
+			}
+
+			newChatRoom := NewChatRoom(chatUpdatePayload.ChatConfig)
+			chatStorage.AddNewChatRoom(newChatRoom)
+
 		case "message-new":
 			var chatUpdatePayload ChatUpdatePayloadMessageNew
 			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
