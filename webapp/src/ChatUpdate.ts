@@ -1,9 +1,18 @@
+import type { ChatConfig } from './ChatConfig'
+
 interface BaseChatUpdate {
   timestamp: string
   author: string
 
   // To override in subtypes with a string literal
   type: string
+}
+
+export interface ChatUpdateRoomCreate extends BaseChatUpdate {
+  type: 'room-create'
+  payload: {
+    chatConfig: ChatConfig
+  }
 }
 
 export interface ChatUpdateNewStatusJoinRoom extends BaseChatUpdate {
@@ -34,6 +43,7 @@ export interface ChatUpdateMessageDelete extends BaseChatUpdate {
 }
 
 export type ChatUpdate =
+  | ChatUpdateRoomCreate
   | ChatUpdateNewStatusJoinRoom
   | ChatUpdateNewStatusLeaveRoom
   | ChatUpdateTyping
