@@ -23,11 +23,9 @@ const ws = ref<WebSocket | null>(null)
 const wsConnectionState = ref<WebSocket['readyState'] | undefined>(undefined)
 const isWebsocketConnected = computed(() => wsConnectionState.value === WebSocket.OPEN)
 
-const websocketServerUrlBuilder = (chatID: string) =>
-  `ws://localhost:3000/api/chat/join/${chatID}/websocket`
+function setupWebsocket() {
+  ws.value = new WebSocket('ws://localhost:3000/api/websocket')
 
-function setupWebsocket(chatID: string) {
-  ws.value = new WebSocket(websocketServerUrlBuilder(chatID))
   wsConnectionState.value = ws.value.readyState
 
   ws.value.addEventListener('open', () => {
@@ -42,38 +40,11 @@ function setupWebsocket(chatID: string) {
 }
 
 function joinChat() {
-  setupWebsocket(joinChatID.value)
+  setupWebsocket()
 }
 
 async function startNewChat() {
-  const res = await fetch(`${apiBaseURL}/api/chat/new`, {
-    method: 'POST',
-    body: JSON.stringify({
-      userID: crypto.randomUUID(),
-      chatConfig,
-    }),
-  }).then(
-    (res) =>
-      res.json() as Promise<
-        | {
-            status: 'success'
-            data: {
-              chatID: string
-            }
-          }
-        | {
-            status: 'error'
-            message: string
-          }
-      >,
-  )
-
-  if (res.status === 'error') {
-    alert('Failed to create new chat')
-    return
-  }
-
-  setupWebsocket(res.data.chatID)
+  setupWebsocket()
 }
 
 const resetConfig = () => window.location.reload()
