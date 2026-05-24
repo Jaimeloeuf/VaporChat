@@ -7,11 +7,12 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func broadcastMessageToChatRoom(chatID string, message string, selfWebsocketConnection *websocket.Conn) error {
+// @todo This should be a method on the chatRoom itself, and lock the chatRoom itself
+func broadcastMessageToRoom(roomID string, message string, selfWebsocketConnection *websocket.Conn) error {
 	chatStorage.RLock()
 	defer chatStorage.RUnlock()
 
-	chatRoom, chatRoomExists := chatStorage.chatRooms[chatID]
+	chatRoom, chatRoomExists := chatStorage.chatRooms[roomID]
 	if !chatRoomExists {
 		return errors.New("Chat room not available")
 	}
