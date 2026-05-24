@@ -19,5 +19,7 @@ onMounted(() => {
     </div>
     <p class="text-2xl font-thin text-gray-400">... loading ...</p>
   </div>
-  <ChatStart v-else />
+  <div v-else class="mx-auto max-w-7xl p-4 text-gray-500">
+    <ChatStart />
+  </div>
 </template>
