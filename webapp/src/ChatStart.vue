@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import type { ChatConfig } from './ChatConfig'
-
-import Logo from './Logo.vue'
 import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import Chat from './Chat.vue'
 
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { getRandomAnimalName } from './getRandomAnimalName'
 import { useWebsocket } from './useWebsocket.ts'
+import { useChatConfig } from './useChatConfig.ts'
 
-const chatConfig = reactive<ChatConfig>({
-  chatRoomTTL: 300,
-  maxNumberOfParticipants: 2,
-  maxHistoryDurationInSeconds: 120,
-  maxMessagesLength: 20,
-})
+const { chatConfig } = useChatConfig()
 
 const joinChatID = ref('')
 const username = ref(`Anonymous ${getRandomAnimalName()}`)
