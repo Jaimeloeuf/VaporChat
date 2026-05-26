@@ -1,3 +1,5 @@
+import type { ChatUpdate } from './ChatUpdate.ts'
+
 import { ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
 
@@ -34,6 +36,10 @@ function getWebsocket() {
   return websocket.value
 }
 
+function sendChatUpdateOverWebsocket(chatUpdate: ChatUpdate) {
+  getWebsocket().send(JSON.stringify(chatUpdate))
+}
+
 export function useWebsocket() {
   return {
     setupWebsocket,
@@ -42,5 +48,6 @@ export function useWebsocket() {
     websocketConnectionState,
     websocketConnectionStateString,
     isWebsocketConnected,
+    sendChatUpdateOverWebsocket,
   }
 }
