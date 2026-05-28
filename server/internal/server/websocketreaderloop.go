@@ -93,6 +93,12 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 			newChatRoom := NewChatRoom(chatUpdatePayload.ChatConfig)
 			chatStorage.AddNewChatRoom(newChatRoom)
 
+		case "room-join":
+			log.Printf("[Status] User %s joined the room at %s\n", chatUpdateEnvelope.Username, chatUpdateEnvelope.Timestamp)
+
+		case "room-leave":
+			log.Printf("[Status] User %s left the room at %s\n", chatUpdateEnvelope.Username, chatUpdateEnvelope.Timestamp)
+
 		case "message-new":
 			var chatUpdatePayload ChatUpdatePayloadMessageNew
 			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
@@ -106,10 +112,6 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 				log.Printf("Malformed %s payload: %v", chatUpdateEnvelope.Type, err)
 				continue
 			}
-
-		case "join_room":
-
-		case "leave_room":
 
 		case "typing":
 
