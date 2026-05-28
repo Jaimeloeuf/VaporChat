@@ -4,9 +4,10 @@ import type { Message } from './Message'
 
 import { ref, reactive, onMounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
+import { createChatUpdate } from './ChatUpdate'
 import { useWebsocket } from './useWebsocket.ts'
 
-const { getWebsocket } = useWebsocket()
+const { getWebsocket, sendChatUpdateOverWebsocket } = useWebsocket()
 const websocket = getWebsocket()
 
 const props = defineProps<{
@@ -83,6 +84,13 @@ async function sendNewMessage() {
     return
   }
 
+  const chatUpdate = createChatUpdate('message-new', {
+    payload: {
+      roomID: props.chatConfig.chatRoomTTL.toString(),
+      message: currentMessageDraft.value,
+    },
+  })
+
   const message: Message = {
     author: 'current-user',
     timestamp: new Date().toISOString(),
@@ -91,7 +99,7 @@ async function sendNewMessage() {
   addNewLocalMessage(message)
   currentMessageDraft.value = ''
 
-  websocket.send(JSON.stringify(chatUpdate))
+  sendChatUpdateOverWebsocket(chatUpdate)
 }
 </script>
 
