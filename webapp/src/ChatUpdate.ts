@@ -15,6 +15,13 @@ export interface ChatUpdateRoomCreate extends BaseChatUpdate {
   }
 }
 
+export interface ChatUpdateRoomDestroy extends BaseChatUpdate {
+  type: 'room-destroy'
+  payload: {
+    roomID: string
+  }
+}
+
 export interface ChatUpdateNewStatusJoinRoom extends BaseChatUpdate {
   type: 'status-join-room'
   payload: {
@@ -51,6 +58,7 @@ export interface ChatUpdateMessageDelete extends BaseChatUpdate {
 
 export type ChatUpdate =
   | ChatUpdateRoomCreate
+  | ChatUpdateRoomDestroy
   | ChatUpdateNewStatusJoinRoom
   | ChatUpdateNewStatusLeaveRoom
   | ChatUpdateTyping
