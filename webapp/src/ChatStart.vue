@@ -13,7 +13,7 @@ const { chatConfig } = useChatConfig()
 const joinChatID = ref('')
 const username = ref(`Anonymous ${getRandomAnimalName()}`)
 
-const { setupWebsocket, sendChatUpdateOverWebsocket } = useWebsocket()
+const { sendChatUpdateOverWebsocket } = useWebsocket()
 
 function joinChat() {
   sendChatUpdateOverWebsocket(
@@ -26,7 +26,13 @@ function joinChat() {
 }
 
 async function startNewChat() {
-  setupWebsocket()
+  sendChatUpdateOverWebsocket(
+    createChatUpdate('room-create', {
+      payload: {
+        chatConfig,
+      },
+    }),
+  )
 }
 
 const resetConfig = () => window.location.reload()
