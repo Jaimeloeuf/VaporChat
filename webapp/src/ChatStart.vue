@@ -6,16 +6,23 @@ import { ref } from 'vue'
 import { getRandomAnimalName } from './getRandomAnimalName'
 import { useWebsocket } from './useWebsocket.ts'
 import { useChatConfig } from './useChatConfig.ts'
+import { createChatUpdate } from './ChatUpdate.ts'
 
 const { chatConfig } = useChatConfig()
 
 const joinChatID = ref('')
 const username = ref(`Anonymous ${getRandomAnimalName()}`)
 
-const { setupWebsocket, websocket, isWebsocketConnected } = useWebsocket()
+const { setupWebsocket, sendChatUpdateOverWebsocket } = useWebsocket()
 
 function joinChat() {
-  setupWebsocket()
+  sendChatUpdateOverWebsocket(
+    createChatUpdate('status-join-room', {
+      payload: {
+        roomID: joinChatID.value,
+      },
+    }),
+  )
 }
 
 async function startNewChat() {
