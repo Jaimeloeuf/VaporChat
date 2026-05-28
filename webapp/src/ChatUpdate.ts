@@ -17,10 +17,16 @@ export interface ChatUpdateRoomCreate extends BaseChatUpdate {
 
 export interface ChatUpdateNewStatusJoinRoom extends BaseChatUpdate {
   type: 'status-join-room'
+  payload: {
+    roomID: string
+  }
 }
 
 export interface ChatUpdateNewStatusLeaveRoom extends BaseChatUpdate {
   type: 'status-leave-room'
+  payload: {
+    roomID: string
+  }
 }
 
 // @todo In UI show for 2s from the last time of receiving this update
@@ -31,6 +37,7 @@ export interface ChatUpdateTyping extends BaseChatUpdate {
 export interface ChatUpdateMessageNew extends BaseChatUpdate {
   type: 'message-new'
   payload: {
+    roomID: string
     message: string
   }
 }
