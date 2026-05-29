@@ -56,6 +56,9 @@ export interface ChatUpdateMessageDelete extends BaseChatUpdate {
   }
 }
 
+/**
+ * `ChatUpdate` is both what you send out and what you receive
+ */
 export type ChatUpdate =
   | ChatUpdateRoomCreate
   | ChatUpdateRoomDestroy
