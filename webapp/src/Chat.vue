@@ -40,13 +40,15 @@ watch(
   },
 )
 
-websocket.addEventListener('message', function (event) {
+function handleNewChatUpdate(event: MessageEvent) {
   addNewLocalMessage({
     author: 'other-user',
     timestamp: new Date().toISOString(),
     message: event.data,
   })
-})
+}
+
+websocket.addEventListener('message', handleNewChatUpdate)
 
 /**
  * Check for and remove old messages every second
