@@ -2,7 +2,7 @@
 import type { ChatConfig } from './ChatConfig'
 import type { Message } from './Message'
 
-import { ref, reactive, onMounted, watch, nextTick } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 import { createChatUpdate } from './ChatUpdate'
 import { useWebsocket } from './useWebsocket.ts'
@@ -49,6 +49,9 @@ function handleNewChatUpdate(event: MessageEvent) {
 }
 
 websocket.addEventListener('message', handleNewChatUpdate)
+onUnmounted(() => {
+  websocket.removeEventListener('message', handleNewChatUpdate)
+})
 
 /**
  * Check for and remove old messages every second
