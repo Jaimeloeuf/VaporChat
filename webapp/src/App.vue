@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Logo from './Logo.vue'
-import ChatStart from './ChatStart.vue'
-
 import { onMounted } from 'vue'
+import { RouterView } from 'vue-router'
+
+import Logo from './Logo.vue'
 import { useWebsocket } from './useWebsocket.ts'
 
 const { setupWebsocket, isWebsocketConnected } = useWebsocket()
@@ -20,6 +20,6 @@ onMounted(() => {
     <p class="text-2xl font-thin text-gray-400">... loading ...</p>
   </div>
   <div v-else class="mx-auto max-w-7xl p-4 text-gray-500">
-    <ChatStart />
+    <RouterView />
   </div>
 </template>
