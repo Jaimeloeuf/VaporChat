@@ -1,4 +1,4 @@
-import { reactive, ref, computed } from 'vue'
+import { reactive, readonly } from 'vue'
 import type { ChatConfig } from './ChatConfig'
 
 const chatConfig = reactive<ChatConfig>({
@@ -11,5 +11,6 @@ const chatConfig = reactive<ChatConfig>({
 export function useChatConfig() {
   return {
     chatConfig,
+    readonlyChatConfig: readonly(chatConfig),
   }
 }
