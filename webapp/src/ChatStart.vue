@@ -2,11 +2,13 @@
 import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { getRandomAnimalName } from './getRandomAnimalName'
 import { useWebsocket } from './useWebsocket.ts'
 import { useChatConfig } from './useChatConfig.ts'
 import { createChatUpdate } from './ChatUpdate.ts'
 
+const router = useRouter()
 const { chatConfig } = useChatConfig()
 
 const joinChatID = ref('')
@@ -22,6 +24,9 @@ function joinChat() {
       },
     }),
   )
+  router.push({
+    name: 'chat-room',
+  })
 }
 
 async function startNewChat() {
@@ -32,6 +37,9 @@ async function startNewChat() {
       },
     }),
   )
+  router.push({
+    name: 'chat-room',
+  })
 }
 
 const resetConfig = () => window.location.reload()
