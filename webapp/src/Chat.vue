@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import type { ChatConfig } from './ChatConfig'
 import type { Message } from './Message'
 
 import { ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
 import { createChatUpdate } from './ChatUpdate'
 import { useWebsocket } from './useWebsocket.ts'
+import { useChatConfig } from './useChatConfig.ts'
 
 const { getWebsocket, sendChatUpdateOverWebsocket } = useWebsocket()
 const websocket = getWebsocket()
 
-const props = defineProps<{
-  chatConfig: Readonly<ChatConfig>
-}>()
+const { readonlyChatConfig } = useChatConfig()
 
 const messageContainer = ref<HTMLDivElement | null>(null)
 const currentMessageDraft = ref('')
@@ -57,7 +55,7 @@ onUnmounted(() => {
  * Check for and remove old messages every second
  */
 onMounted(() => {
-  const maxHistoryDurationInMs = props.chatConfig.maxHistoryDurationInSeconds * 1000
+  const maxHistoryDurationInMs = readonlyChatConfig.maxHistoryDurationInSeconds * 1000
 
   setInterval(() => {
     while (
@@ -77,7 +75,7 @@ onMounted(() => {
 function addNewLocalMessage(message: Message) {
   messages.push(message)
 
-  while (messages.length > props.chatConfig.maxMessagesLength) {
+  while (messages.length > readonlyChatConfig.maxMessagesLength) {
     messages.shift()
   }
 
@@ -91,7 +89,7 @@ async function sendNewMessage() {
 
   const chatUpdate = createChatUpdate('message-new', {
     payload: {
-      roomID: props.chatConfig.chatRoomTTL.toString(),
+      roomID: readonlyChatConfig.chatRoomTTL.toString(),
       message: currentMessageDraft.value,
     },
   })
@@ -120,7 +118,7 @@ async function sendNewMessage() {
               *Default to 300 seconds / 5 mins, after which chat room will be permanently destroyed
             </p>
             <input
-              :value="props.chatConfig.chatRoomTTL"
+              :value="readonlyChatConfig.chatRoomTTL"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
               disabled
             />
@@ -129,7 +127,7 @@ async function sendNewMessage() {
             <p>Max number of participants</p>
             <p class="text-xs">*Default is a 2 person peer to peer chat</p>
             <input
-              :value="props.chatConfig.maxNumberOfParticipants"
+              :value="readonlyChatConfig.maxNumberOfParticipants"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
               disabled
             />
@@ -138,7 +136,7 @@ async function sendNewMessage() {
             <p>Max messages to keep in chat</p>
             <p class="text-xs">*Older messages will be auto deleted</p>
             <input
-              :value="props.chatConfig.maxMessagesLength"
+              :value="readonlyChatConfig.maxMessagesLength"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
               disabled
             />
@@ -147,7 +145,7 @@ async function sendNewMessage() {
             <p>Max message retention time in seconds</p>
             <p class="text-xs">*Expired messages will be auto deleted</p>
             <input
-              :value="props.chatConfig.maxHistoryDurationInSeconds"
+              :value="readonlyChatConfig.maxHistoryDurationInSeconds"
               class="w-full rounded border border-gray-200 p-1.5 outline-none"
               disabled
             />
