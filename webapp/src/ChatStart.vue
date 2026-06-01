@@ -3,7 +3,7 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getRandomAnimalName } from './getRandomAnimalName'
+import { getRandomAnonymousAnimalName } from './getRandomAnimalName'
 import { useWebsocket } from './useWebsocket.ts'
 import { useChatConfig } from './useChatConfig.ts'
 import { createChatUpdate } from './ChatUpdate.ts'
@@ -12,7 +12,7 @@ const router = useRouter()
 const { chatConfig } = useChatConfig()
 
 const joinChatID = ref('')
-const username = ref(`Anonymous ${getRandomAnimalName()}`)
+const username = ref(getRandomAnonymousAnimalName())
 
 const { sendChatUpdateOverWebsocket } = useWebsocket()
 

@@ -1,5 +1,7 @@
 export const getRandomAnimalName = () => animalNames[Math.floor(Math.random() * animalNames.length)]
 
+export const getRandomAnonymousAnimalName = () => 'Anonymous ' + getRandomAnimalName()
+
 const animalNames = [
   'Alpacas',
   'Ant',
