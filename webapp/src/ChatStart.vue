@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
-import Chat from './Chat.vue'
 
 import { ref } from 'vue'
 import { getRandomAnimalName } from './getRandomAnimalName'
@@ -36,8 +35,6 @@ async function startNewChat() {
 }
 
 const resetConfig = () => window.location.reload()
-
-const leaveChat = () => window.location.reload()
 </script>
 
 <template>
@@ -154,21 +151,6 @@ const leaveChat = () => window.location.reload()
           </div>
         </div>
       </div>
-    </div>
-
-    <div>
-      <div class="flex w-full flex-row items-center justify-between pb-4 align-middle">
-        <LogoWithConnectionStatus />
-        <div>
-          <button
-            class="cursor-pointer rounded-2xl border border-red-500 px-4 py-1 text-red-500"
-            @click="leaveChat"
-          >
-            leave
-          </button>
-        </div>
-      </div>
-      <Chat :chat-config="Object.freeze(chatConfig)" />
     </div>
   </div>
 </template>
