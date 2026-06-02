@@ -3,6 +3,7 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import RightChevron from './RightChevron.vue'
 
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { getRandomAnonymousAnimalName } from './getRandomAnimalName'
 
 // @todo this should be an external state
@@ -22,18 +23,30 @@ const username = ref(getRandomAnonymousAnimalName())
           class="w-full rounded border border-gray-200 p-1.5 outline-none"
         />
       </div>
-      <div
-        class="flex cursor-pointer flex-row items-center justify-between rounded-lg border border-gray-200 p-8 shadow hover:bg-green-100"
+      <RouterLink
+        :to="{
+          name: 'chat-start-new',
+        }"
       >
-        <p>Start new Chat</p>
-        <RightChevron class="h-4 w-4" />
-      </div>
-      <div
-        class="flex cursor-pointer flex-row items-center justify-between rounded-lg border border-gray-200 p-8 shadow hover:bg-green-100"
+        <div
+          class="flex cursor-pointer flex-row items-center justify-between rounded-lg border border-gray-200 p-8 shadow hover:bg-green-100"
+        >
+          <p>Start new Chat</p>
+          <RightChevron class="h-4 w-4" />
+        </div>
+      </RouterLink>
+      <RouterLink
+        :to="{
+          name: 'chat-start-join',
+        }"
       >
-        <p>Join Chat</p>
-        <RightChevron class="h-4 w-4" />
-      </div>
+        <div
+          class="flex cursor-pointer flex-row items-center justify-between rounded-lg border border-gray-200 p-8 shadow hover:bg-green-100"
+        >
+          <p>Join Chat</p>
+          <RightChevron class="h-4 w-4" />
+        </div>
+      </RouterLink>
     </div>
   </div>
 </template>
