@@ -2,12 +2,10 @@
 import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import RightChevron from './RightChevron.vue'
 
-import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { getRandomAnonymousAnimalName } from './getRandomAnimalName'
+import { useAnonymousUser } from './useAnonymousUser.ts'
 
-// @todo this should be an external state
-const username = ref(getRandomAnonymousAnimalName())
+const { username } = useAnonymousUser()
 </script>
 
 <template>
