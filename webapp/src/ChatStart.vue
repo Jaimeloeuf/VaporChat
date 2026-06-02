@@ -5,21 +5,37 @@ import RightChevron from './RightChevron.vue'
 import { RouterLink } from 'vue-router'
 import { useAnonymousUser } from './useAnonymousUser.ts'
 
-const { username } = useAnonymousUser()
+const { userID, username } = useAnonymousUser()
 </script>
 
 <template>
   <div class="flex flex-row justify-center">
     <div class="flex max-w-sm flex-col gap-6">
       <LogoWithConnectionStatus />
-      <div class="py-8">
-        <p>Username</p>
-        <p class="pb-1 text-xs">*Temporary username, this is deleted once you leave the chat</p>
-        <input
-          v-model="username"
-          type="text"
-          class="w-full rounded border border-gray-200 p-1.5 outline-none"
-        />
+      <div class="py-4">
+        <p class="text-lg">Temporary Anonymous Account</p>
+        <p class="pb-1 text-xs">
+          *Temporary anonymous account generated for you, this is deleted once you leave the chat
+        </p>
+        <div class="flex flex-col gap-4 rounded-lg border border-gray-200 p-4">
+          <div>
+            <p>User ID</p>
+            <input
+              v-model="userID"
+              type="text"
+              class="w-full rounded border border-gray-200 bg-gray-50 p-1.5 outline-none"
+              disabled
+            />
+          </div>
+          <div>
+            <p>Username</p>
+            <input
+              v-model="username"
+              type="text"
+              class="w-full rounded border border-gray-200 p-1.5 outline-none"
+            />
+          </div>
+        </div>
       </div>
       <RouterLink
         :to="{
