@@ -8,9 +8,11 @@ const chatConfig = reactive<ChatConfig>({
   maxMessagesLength: 20,
 })
 
+const readonlyChatConfig = readonly(chatConfig)
+
 export function useChatConfig() {
   return {
     chatConfig,
-    readonlyChatConfig: readonly(chatConfig),
+    readonlyChatConfig,
   }
 }
