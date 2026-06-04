@@ -10,7 +10,7 @@ const { userID, username } = useAnonymousUser()
 
 <template>
   <div class="flex flex-row justify-center">
-    <div class="flex max-w-sm flex-col gap-6">
+    <div class="flex w-sm flex-col gap-6">
       <LogoWithConnectionStatus />
       <div class="py-4">
         <p class="text-lg">Temporary Anonymous Account</p>
