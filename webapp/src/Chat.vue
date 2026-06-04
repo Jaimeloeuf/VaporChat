@@ -180,12 +180,14 @@ const leaveChat = () => window.location.reload()
             }"
           >
             <p v-if="messages.length === 0" class="text-center font-thin">... no messages ...</p>
-            <div
-              v-for="message in messages"
-              :key="message.timestamp"
-              class="rounded-xl border border-gray-200 px-2 py-0.5"
-            >
-              <pre class="whitespace-pre-wrap">{{ message.message }}</pre>
+            <div class="flex flex-col overflow-y-scroll">
+              <div
+                v-for="message in messages"
+                :key="message.timestamp"
+                class="rounded-xl border border-gray-200 px-2 py-0.5"
+              >
+                <pre class="whitespace-pre-wrap">{{ message.message }}</pre>
+              </div>
             </div>
             <div class="pt-4">
               <textarea
