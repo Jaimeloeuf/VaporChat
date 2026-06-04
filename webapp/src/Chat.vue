@@ -187,19 +187,17 @@ const leaveChat = () => window.location.reload()
             >
               <pre class="whitespace-pre-wrap">{{ message.message }}</pre>
             </div>
+            <div class="pt-4">
+              <textarea
+                id="message"
+                rows="4"
+                class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 placeholder-gray-400 shadow-sm outline-none"
+                placeholder="Type your message here..."
+                v-model="currentMessageDraft"
+                @keydown.enter.exact.prevent="sendNewMessage"
+              />
+            </div>
           </div>
-        </div>
-
-        <div class="basis-2/5">
-          <label for="message" class="block pb-1 text-sm font-medium">Your Message</label>
-          <textarea
-            id="message"
-            rows="4"
-            class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 placeholder-gray-400 shadow-sm outline-none"
-            placeholder="Type your message here..."
-            v-model="currentMessageDraft"
-            @keydown.enter.exact.prevent="sendNewMessage"
-          />
         </div>
       </div>
     </div>
