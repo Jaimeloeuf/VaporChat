@@ -1,8 +1,9 @@
 import type { ChatConfig } from './ChatConfig'
 
-interface BaseChatUpdate {
+export interface BaseChatUpdate {
   timestamp: string
-  author: string
+  userID: string
+  username: string
 
   // To override in subtypes with a string literal
   type: string
@@ -68,23 +69,4 @@ export type ChatUpdate =
   | ChatUpdateMessageNew
   | ChatUpdateMessageDelete
 
-// Helper type to check if an object has no keys
-type Prettify<T> = { [K in keyof T]: T[K] } & {}
-type ExtraFields<T extends ChatUpdate['type']> = Prettify<
-  Omit<Extract<ChatUpdate, { type: T }>, keyof BaseChatUpdate>
->
-
-export function createChatUpdate<T extends ChatUpdate['type']>(
-  ...args: ExtraFields<T> extends Record<string, never>
-    ? [type: T]
-    : [type: T, additionalData: ExtraFields<T>]
-): Extract<ChatUpdate, { type: T }> {
-  const [type, additionalData] = args
-  return {
-    timestamp: new Date().toISOString(),
-    // @todo
-    author: 'author',
-    type,
-    ...(additionalData || {}),
-  } as Extract<ChatUpdate, { type: T }>
-}
+export { createChatUpdate } from './createChatUpdate'
