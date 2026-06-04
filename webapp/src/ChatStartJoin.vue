@@ -4,7 +4,7 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWebsocket } from './useWebsocket.ts'
-import { createChatUpdate } from './ChatUpdate.ts'
+import { createChatUpdate } from './createChatUpdate.ts'
 import { useAnonymousUser } from './useAnonymousUser.ts'
 
 const router = useRouter()

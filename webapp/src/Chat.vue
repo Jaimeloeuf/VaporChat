@@ -4,7 +4,7 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 
 import { ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
-import { createChatUpdate } from './ChatUpdate'
+import { createChatUpdate } from './createChatUpdate.ts'
 import { useWebsocket } from './useWebsocket.ts'
 import { useChatConfig } from './useChatConfig.ts'
 

@@ -68,5 +68,3 @@ export type ChatUpdate =
   | ChatUpdateTyping
   | ChatUpdateMessageNew
   | ChatUpdateMessageDelete
-
-export { createChatUpdate } from './createChatUpdate'
