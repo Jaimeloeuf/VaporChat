@@ -173,13 +173,14 @@ const leaveChat = () => window.location.reload()
           <p class="pb-1 text-sm font-medium">Chat</p>
           <div
             ref="messageContainer"
-            class="no-scrollbar flex h-[70dvh] flex-col gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
-            :class="{
-              'justify-center': messages.length === 0,
-              'justify-end': messages.length !== 0,
-            }"
+            class="no-scrollbar flex h-[70dvh] flex-col justify-end gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
           >
-            <p v-if="messages.length === 0" class="text-center font-thin">... no messages ...</p>
+            <div
+              v-if="messages.length === 0"
+              class="flex h-full flex-col justify-center text-center font-thin"
+            >
+              ... no messages ...
+            </div>
             <div class="flex flex-col overflow-y-scroll">
               <div
                 v-for="message in messages"
