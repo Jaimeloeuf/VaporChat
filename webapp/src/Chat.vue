@@ -172,8 +172,7 @@ const leaveChat = () => window.location.reload()
         <div class="basis-2/5">
           <p class="pb-1 text-sm font-medium">Chat</p>
           <div
-            ref="messageContainer"
-            class="no-scrollbar flex h-[70dvh] flex-col justify-end gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
+            class="flex h-[70dvh] flex-col justify-end gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
           >
             <div
               v-if="messages.length === 0"
@@ -181,7 +180,7 @@ const leaveChat = () => window.location.reload()
             >
               ... no messages ...
             </div>
-            <div class="flex flex-col overflow-y-scroll">
+            <div ref="messageContainer" class="no-scrollbar flex flex-col overflow-y-scroll">
               <div
                 v-for="message in messages"
                 :key="message.timestamp"
