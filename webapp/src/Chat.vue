@@ -39,6 +39,34 @@ watch(
   },
 )
 
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
+
+async function adjustHeight() {
+  // Wait for Vue to update the DOM with the new text
+  await nextTick()
+
+  const textarea = textareaRef.value
+  if (textarea === null) {
+    return
+  }
+
+  // Reset height to let it shrink properly
+  textarea.style.height = 'auto'
+
+  // Calculate the maximum height allowed (4 rows)
+  // 24px line-height * 4 rows + 16px vertical padding (py-2 is 8px top + 8px bottom)
+  // const maxHeight = 24 * 4 + 16
+  const maxHeight = 48 * 6 + 16
+
+  if (textarea.scrollHeight >= maxHeight) {
+    textarea.style.height = `${maxHeight}px`
+    textarea.style.overflowY = 'auto' // Show scrollbar at max height
+  } else {
+    textarea.style.height = `${textarea.scrollHeight}px`
+    textarea.style.overflowY = 'hidden' // Hide scrollbar when shrinking
+  }
+}
+
 function handleNewChatUpdate(event: MessageEvent) {
   addNewLocalMessage({
     author: 'other-user',
@@ -172,7 +200,7 @@ const leaveChat = () => window.location.reload()
         <div class="basis-2/5">
           <p class="pb-1 text-sm font-medium">Chat</p>
           <div
-            class="flex h-[70dvh] flex-col justify-end gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-4 shadow-sm"
+            class="flex h-[70dvh] flex-col justify-end gap-2 overflow-y-scroll rounded-lg border border-gray-200 p-2 shadow-sm"
           >
             <div
               v-if="messages.length === 0"
@@ -192,11 +220,12 @@ const leaveChat = () => window.location.reload()
             <div class="relative pt-4">
               <textarea
                 id="message"
-                rows="4"
+                rows="1"
                 class="w-full resize-none rounded-lg border border-gray-200 py-2 pr-12 pb-10 pl-4 leading-6 placeholder-gray-400 shadow-sm outline-none"
                 placeholder="Type your message here..."
                 v-model="currentMessageDraft"
                 @keydown.enter.exact.prevent="sendNewMessage"
+                @input="adjustHeight"
               />
               <button @click="sendNewMessage" class="absolute right-2 bottom-4 outline-none">
                 <div class="justify-content flex w-fit items-center rounded-full bg-gray-200 p-2">
