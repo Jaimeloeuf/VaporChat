@@ -193,7 +193,7 @@ const leaveChat = () => window.location.reload()
               <textarea
                 id="message"
                 rows="4"
-                class="w-full resize-y rounded-lg border border-gray-200 px-4 py-2 placeholder-gray-400 shadow-sm outline-none"
+                class="w-full resize-none rounded-lg border border-gray-200 px-4 py-2 placeholder-gray-400 shadow-sm outline-none"
                 placeholder="Type your message here..."
                 v-model="currentMessageDraft"
                 @keydown.enter.exact.prevent="sendNewMessage"
