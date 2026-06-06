@@ -180,7 +180,7 @@ const leaveChat = () => window.location.reload()
             >
               ... no messages ...
             </div>
-            <div ref="messageContainer" class="no-scrollbar flex flex-col overflow-y-scroll">
+            <div ref="messageContainer" class="no-scrollbar flex flex-col gap-2 overflow-y-scroll">
               <div
                 v-for="message in messages"
                 :key="message.timestamp"
