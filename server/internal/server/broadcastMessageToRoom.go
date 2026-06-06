@@ -28,7 +28,7 @@ func broadcastMessageToRoom(roomID string, message string, selfWebsocketConnecti
 			continue
 		}
 
-		err := chatConnection.WriteMessage(websocket.TextMessage, chatMessageAsByteSlice)
+		err := sendMessageByte(chatConnection, chatMessageAsByteSlice)
 		if err != nil {
 			log.Println("Write error:", err)
 		}
