@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Message } from './Message'
 import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
+import RightChevron from './RightChevron.vue'
 
 import { ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
