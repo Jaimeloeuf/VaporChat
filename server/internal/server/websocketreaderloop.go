@@ -18,12 +18,42 @@ type ChatUpdatePayloadRoomCreate struct {
 	ChatConfig ChatConfig `json:"chatConfig"`
 }
 
+type ChatUpdatePayloadRoomCreated struct {
+	RoomID string `json:"roomID"`
+}
+
 type ChatUpdatePayloadMessageNew struct {
 	Message string `json:"message"`
 }
 
 type ChatUpdatePayloadMessageDelete struct {
 	MessageID string `json:"messageID"`
+}
+
+func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnvelope) {
+	var payloadType string
+
+	// Determine the type string dynamically based on the input struct
+	switch payload.(type) {
+	case ChatUpdatePayloadRoomCreated, *ChatUpdatePayloadRoomCreated:
+		payloadType = "room-created"
+	default:
+		return fmt.Errorf("Unknown payload type: %T", payload), nil
+	}
+
+	// Dynamic marshaling of the specific payload struct into []byte
+	rawPayload, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("Failed to marshal payload: %w", err), nil
+	}
+
+	return nil, &ChatUpdateEnvelope{
+		// ID:        uuid.New().String(),
+		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
+		Username:  "string",
+		Type:      payloadType,
+		Payload:   rawPayload,
+	}
 }
 
 // These are other ChatUpdate types with no payload value
