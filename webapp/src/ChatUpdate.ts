@@ -1,6 +1,7 @@
 import type { ChatConfig } from './ChatConfig'
 
 export interface BaseChatUpdate {
+  id: string
   timestamp: string
   userID: string
   username: string

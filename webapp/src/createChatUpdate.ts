@@ -15,6 +15,7 @@ export function createChatUpdate<T extends ChatUpdate['type']>(
   const [type, additionalData] = args
   const { userID, readonlyUsername } = useAnonymousUser()
   return {
+    id: crypto.randomUUID(),
     timestamp: new Date().toISOString(),
     userID,
     username: readonlyUsername.value,
