@@ -2,12 +2,17 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"strconv"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
 type ChatUpdateEnvelope struct {
+	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
 	Username  string          `json:"author"`
 	Type      string          `json:"type"`
@@ -48,7 +53,7 @@ func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnve
 	}
 
 	return nil, &ChatUpdateEnvelope{
-		// ID:        uuid.New().String(),
+		ID:        uuid.New().String(),
 		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
 		Username:  "string",
 		Type:      payloadType,
