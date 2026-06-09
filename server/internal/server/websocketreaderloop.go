@@ -55,7 +55,7 @@ func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnve
 	return nil, &ChatUpdateEnvelope{
 		ID:        uuid.New().String(),
 		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
-		Username:  "string",
+		Username:  username,
 		Type:      payloadType,
 		Payload:   rawPayload,
 	}
