@@ -61,6 +61,25 @@ func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnve
 	}
 }
 
+func CreateNewChatUpdateAndSendIt(websocketConnection *websocket.Conn, username string, payload interface{}) error {
+	err, chatUpdateEnvelope := NewChatUpdate("system", payload)
+	if err != nil {
+		return err
+	}
+
+	chatUpdateEnvelopeBytes, err := json.Marshal(chatUpdateEnvelope)
+	if err != nil {
+		return err
+	}
+
+	err = sendMessageByte(websocketConnection, chatUpdateEnvelopeBytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // These are other ChatUpdate types with no payload value
 // ChatUpdatePayloadNewStatusJoinRoom
 // ChatUpdatePayloadNewStatusLeaveRoom
@@ -127,6 +146,12 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 
 			newChatRoom := NewChatRoom(chatUpdatePayload.ChatConfig)
 			chatStorage.AddNewChatRoom(newChatRoom)
+
+			log.Printf("[Status] Created room at %s\n", newChatRoom.ID)
+
+			err = CreateNewChatUpdateAndSendIt(websocketConnection, "system", ChatUpdatePayloadRoomCreated{
+				RoomID: newChatRoom.ID,
+			})
 
 		case "room-join":
 			log.Printf("[Status] User %s joined the room at %s\n", chatUpdateEnvelope.Username, chatUpdateEnvelope.Timestamp)
