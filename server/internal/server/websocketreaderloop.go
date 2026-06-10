@@ -14,7 +14,7 @@ import (
 type WsRequestEnvelope struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
-	Username  string          `json:"author"`
+	UserID    string          `json:"userID"`
 	Type      string          `json:"type"`
 	Payload   json.RawMessage `json:"payload,omitempty"`
 }
@@ -35,7 +35,7 @@ type WsRequestPayloadMessageDelete struct {
 	MessageID string `json:"messageID"`
 }
 
-func NewWsRequest(username string, payload interface{}) (error, *WsRequestEnvelope) {
+func NewWsRequest(userID string, payload interface{}) (error, *WsRequestEnvelope) {
 	var payloadType string
 
 	// Determine the type string dynamically based on the input struct
@@ -55,7 +55,7 @@ func NewWsRequest(username string, payload interface{}) (error, *WsRequestEnvelo
 	return nil, &WsRequestEnvelope{
 		ID:        uuid.New().String(),
 		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
-		Username:  username,
+		UserID:    userID,
 		Type:      payloadType,
 		Payload:   rawPayload,
 	}
@@ -154,10 +154,10 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 			})
 
 		case "room-join":
-			log.Printf("[Status] User %s joined the room at %s\n", wsRequestEnvelope.Username, wsRequestEnvelope.Timestamp)
+			log.Printf("[Status] User %s joined the room at %s\n", wsRequestEnvelope.UserID, wsRequestEnvelope.Timestamp)
 
 		case "room-leave":
-			log.Printf("[Status] User %s left the room at %s\n", wsRequestEnvelope.Username, wsRequestEnvelope.Timestamp)
+			log.Printf("[Status] User %s left the room at %s\n", wsRequestEnvelope.UserID, wsRequestEnvelope.Timestamp)
 
 		case "message-new":
 			var wsRequestPayload WsRequestPayloadMessageNew
