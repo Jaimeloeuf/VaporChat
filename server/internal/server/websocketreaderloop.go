@@ -61,8 +61,8 @@ func NewWsRequest(userID string, payload interface{}) (error, *WsRequestEnvelope
 	}
 }
 
-func CreateNewWsRequestAndSendIt(websocketConnection *websocket.Conn, username string, payload interface{}) error {
-	err, wsRequestEnvelope := NewWsRequest("system", payload)
+func CreateNewWsRequestAndSendIt(websocketConnection *websocket.Conn, userID string, payload interface{}) error {
+	err, wsRequestEnvelope := NewWsRequest(userID, payload)
 	if err != nil {
 		return err
 	}
