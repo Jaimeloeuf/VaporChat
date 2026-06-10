@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type ChatUpdateEnvelope struct {
+type WsRequestEnvelope struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
 	Username  string          `json:"author"`
@@ -19,28 +19,28 @@ type ChatUpdateEnvelope struct {
 	Payload   json.RawMessage `json:"payload,omitempty"`
 }
 
-type ChatUpdatePayloadRoomCreate struct {
+type WsRequestPayloadRoomCreate struct {
 	ChatConfig ChatConfig `json:"chatConfig"`
 }
 
-type ChatUpdatePayloadRoomCreated struct {
+type WsRequestPayloadRoomCreated struct {
 	RoomID string `json:"roomID"`
 }
 
-type ChatUpdatePayloadMessageNew struct {
+type WsRequestPayloadMessageNew struct {
 	Message string `json:"message"`
 }
 
-type ChatUpdatePayloadMessageDelete struct {
+type WsRequestPayloadMessageDelete struct {
 	MessageID string `json:"messageID"`
 }
 
-func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnvelope) {
+func NewWsRequest(username string, payload interface{}) (error, *WsRequestEnvelope) {
 	var payloadType string
 
 	// Determine the type string dynamically based on the input struct
 	switch payload.(type) {
-	case ChatUpdatePayloadRoomCreated, *ChatUpdatePayloadRoomCreated:
+	case WsRequestPayloadRoomCreated, *WsRequestPayloadRoomCreated:
 		payloadType = "room-created"
 	default:
 		return fmt.Errorf("Unknown payload type: %T", payload), nil
@@ -52,7 +52,7 @@ func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnve
 		return fmt.Errorf("Failed to marshal payload: %w", err), nil
 	}
 
-	return nil, &ChatUpdateEnvelope{
+	return nil, &WsRequestEnvelope{
 		ID:        uuid.New().String(),
 		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
 		Username:  username,
@@ -61,18 +61,18 @@ func NewChatUpdate(username string, payload interface{}) (error, *ChatUpdateEnve
 	}
 }
 
-func CreateNewChatUpdateAndSendIt(websocketConnection *websocket.Conn, username string, payload interface{}) error {
-	err, chatUpdateEnvelope := NewChatUpdate("system", payload)
+func CreateNewWsRequestAndSendIt(websocketConnection *websocket.Conn, username string, payload interface{}) error {
+	err, wsRequestEnvelope := NewWsRequest("system", payload)
 	if err != nil {
 		return err
 	}
 
-	chatUpdateEnvelopeBytes, err := json.Marshal(chatUpdateEnvelope)
+	wsRequestEnvelopeBytes, err := json.Marshal(wsRequestEnvelope)
 	if err != nil {
 		return err
 	}
 
-	err = sendMessageByte(websocketConnection, chatUpdateEnvelopeBytes)
+	err = sendMessageByte(websocketConnection, wsRequestEnvelopeBytes)
 	if err != nil {
 		return err
 	}
@@ -80,10 +80,10 @@ func CreateNewChatUpdateAndSendIt(websocketConnection *websocket.Conn, username 
 	return nil
 }
 
-// These are other ChatUpdate types with no payload value
-// ChatUpdatePayloadNewStatusJoinRoom
-// ChatUpdatePayloadNewStatusLeaveRoom
-// ChatUpdatePayloadTyping
+// These are other WsRequest types with no payload value
+// WsRequestPayloadNewStatusJoinRoom
+// WsRequestPayloadNewStatusLeaveRoom
+// WsRequestPayloadTyping
 
 func websocketReaderLoop(websocketConnection *websocket.Conn) {
 	// Ensure connection is cleaned up from memory and closed when loop ends
@@ -104,13 +104,13 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 		// `json.RawMessage` parsing later
 		messageType, rawBytes, err := websocketConnection.ReadMessage()
 
-		log.Printf("[ChatUpdate] incoming")
+		log.Printf("[WsRequest] incoming")
 
 		// Exiting loop will hit the defer and clean up websocket connection
 		if err != nil {
 			log.Printf("Client disconnected or ws read message error: %v", err)
 			// @todo
-			// broadcastChatUpdateToChatRoom(chatID, "Other user has left", websocketConnection)
+			// broadcastMessageToRoom("chatID", "Other user has left", websocketConnection)
 			break
 		}
 
@@ -120,9 +120,9 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 			continue
 		}
 
-		// Unmarshal JSON into top level ChatUpdateEnvelope struct
-		var chatUpdateEnvelope ChatUpdateEnvelope
-		if err := json.Unmarshal(rawBytes, &chatUpdateEnvelope); err != nil {
+		// Unmarshal JSON into top level struct
+		var wsRequestEnvelope WsRequestEnvelope
+		if err := json.Unmarshal(rawBytes, &wsRequestEnvelope); err != nil {
 			// @todo If JSON parsing failed because of field issues, we might not want to break the connection?
 			// CRITICAL FIX: If JSON is malformed, log it and 'continue' instead of 'break'
 			// This prevents bad client inputs from crashing the entire user session.
@@ -135,48 +135,48 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 		log.Printf("Received raw data: %s", string(rawBytes))
 
 		// Switch based on the polymorphic 'Type' field
-		switch chatUpdateEnvelope.Type {
+		switch wsRequestEnvelope.Type {
 
 		case "room-create":
-			var chatUpdatePayload ChatUpdatePayloadRoomCreate
-			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
-				log.Printf("Malformed %s payload: %v", chatUpdateEnvelope.Type, err)
+			var wsRequestPayload WsRequestPayloadRoomCreate
+			if err := json.Unmarshal(wsRequestEnvelope.Payload, &wsRequestPayload); err != nil {
+				log.Printf("Malformed %s payload: %v", wsRequestEnvelope.Type, err)
 				continue
 			}
 
-			newChatRoom := NewChatRoom(chatUpdatePayload.ChatConfig)
+			newChatRoom := NewChatRoom(wsRequestPayload.ChatConfig)
 			chatStorage.AddNewChatRoom(newChatRoom)
 
 			log.Printf("[Status] Created room at %s\n", newChatRoom.ID)
 
-			err = CreateNewChatUpdateAndSendIt(websocketConnection, "system", ChatUpdatePayloadRoomCreated{
+			err = CreateNewWsRequestAndSendIt(websocketConnection, "system", WsRequestPayloadRoomCreated{
 				RoomID: newChatRoom.ID,
 			})
 
 		case "room-join":
-			log.Printf("[Status] User %s joined the room at %s\n", chatUpdateEnvelope.Username, chatUpdateEnvelope.Timestamp)
+			log.Printf("[Status] User %s joined the room at %s\n", wsRequestEnvelope.Username, wsRequestEnvelope.Timestamp)
 
 		case "room-leave":
-			log.Printf("[Status] User %s left the room at %s\n", chatUpdateEnvelope.Username, chatUpdateEnvelope.Timestamp)
+			log.Printf("[Status] User %s left the room at %s\n", wsRequestEnvelope.Username, wsRequestEnvelope.Timestamp)
 
 		case "message-new":
-			var chatUpdatePayload ChatUpdatePayloadMessageNew
-			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
-				log.Printf("Malformed %s payload: %v", chatUpdateEnvelope.Type, err)
+			var wsRequestPayload WsRequestPayloadMessageNew
+			if err := json.Unmarshal(wsRequestEnvelope.Payload, &wsRequestPayload); err != nil {
+				log.Printf("Malformed %s payload: %v", wsRequestEnvelope.Type, err)
 				continue
 			}
 
 		case "message-delete":
-			var chatUpdatePayload ChatUpdatePayloadMessageDelete
-			if err := json.Unmarshal(chatUpdateEnvelope.Payload, &chatUpdatePayload); err != nil {
-				log.Printf("Malformed %s payload: %v", chatUpdateEnvelope.Type, err)
+			var wsRequestPayload WsRequestPayloadMessageDelete
+			if err := json.Unmarshal(wsRequestEnvelope.Payload, &wsRequestPayload); err != nil {
+				log.Printf("Malformed %s payload: %v", wsRequestEnvelope.Type, err)
 				continue
 			}
 
 		case "typing":
 
 		default:
-			log.Printf("Received unhandled or unknown ChatUpdate type: %s\n", chatUpdateEnvelope.Type)
+			log.Printf("Received unhandled or unknown WsRequest type: %s\n", wsRequestEnvelope.Type)
 		}
 
 	}
