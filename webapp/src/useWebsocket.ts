@@ -1,4 +1,4 @@
-import type { ChatUpdate } from './ChatUpdate.ts'
+import type { WsRequest } from './WsRequest.ts'
 
 import { ref, computed } from 'vue'
 import { getWebsocketStateString } from './getWebsocketStateString'
@@ -36,8 +36,8 @@ function getWebsocket() {
   return websocket.value
 }
 
-function sendChatUpdateOverWebsocket(chatUpdate: ChatUpdate) {
-  getWebsocket().send(JSON.stringify(chatUpdate))
+function sendWsRequest(wsRequest: WsRequest) {
+  getWebsocket().send(JSON.stringify(wsRequest))
 }
 
 export function useWebsocket() {
@@ -48,6 +48,6 @@ export function useWebsocket() {
     websocketConnectionState,
     websocketConnectionStateString,
     isWebsocketConnected,
-    sendChatUpdateOverWebsocket,
+    sendWsRequest,
   }
 }

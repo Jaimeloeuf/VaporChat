@@ -3,19 +3,19 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 
 import { useRouter } from 'vue-router'
 import { useWebsocket } from './useWebsocket.ts'
-import { createChatUpdate } from './createChatUpdate.ts'
+import { createWsRequest } from './createWsRequest.ts'
 import { useAnonymousUser } from './useAnonymousUser.ts'
 import { useChatConfig } from './useChatConfig.ts'
 const { chatConfig } = useChatConfig()
 
 const router = useRouter()
-const { sendChatUpdateOverWebsocket } = useWebsocket()
+const { sendWsRequest } = useWebsocket()
 
 const { userID, readonlyUsername } = useAnonymousUser()
 
 function startNewChat() {
-  sendChatUpdateOverWebsocket(
-    createChatUpdate('room-create', {
+  sendWsRequest(
+    createWsRequest('room-create', {
       payload: {
         chatConfig,
       },

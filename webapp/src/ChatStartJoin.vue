@@ -4,18 +4,18 @@ import LogoWithConnectionStatus from './LogoWithConnectionStatus.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWebsocket } from './useWebsocket.ts'
-import { createChatUpdate } from './createChatUpdate.ts'
+import { createWsRequest } from './createWsRequest.ts'
 import { useAnonymousUser } from './useAnonymousUser.ts'
 
 const router = useRouter()
-const { sendChatUpdateOverWebsocket } = useWebsocket()
+const { sendWsRequest } = useWebsocket()
 
 const { userID, readonlyUsername } = useAnonymousUser()
 const joinChatID = ref('')
 
 function joinChat() {
-  sendChatUpdateOverWebsocket(
-    createChatUpdate('status-join-room', {
+  sendWsRequest(
+    createWsRequest('status-join-room', {
       payload: {
         roomID: joinChatID.value,
       },

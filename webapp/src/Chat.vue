@@ -5,11 +5,11 @@ import RightChevron from './RightChevron.vue'
 
 import { ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { isIsoDatetimeOlderThan } from './isIsoDatetimeOlderThan'
-import { createChatUpdate } from './createChatUpdate.ts'
+import { createWsRequest } from './createWsRequest.ts'
 import { useWebsocket } from './useWebsocket.ts'
 import { useChatConfig } from './useChatConfig.ts'
 
-const { getWebsocket, sendChatUpdateOverWebsocket } = useWebsocket()
+const { getWebsocket, sendWsRequest } = useWebsocket()
 const websocket = getWebsocket()
 
 const { readonlyChatConfig } = useChatConfig()
@@ -117,7 +117,7 @@ async function sendNewMessage() {
     return
   }
 
-  const chatUpdate = createChatUpdate('message-new', {
+  const wsRequest = createWsRequest('message-new', {
     payload: {
       roomID: readonlyChatConfig.chatRoomTTL.toString(),
       message: currentMessageDraft.value,
@@ -132,7 +132,7 @@ async function sendNewMessage() {
   addNewLocalMessage(message)
   currentMessageDraft.value = ''
 
-  sendChatUpdateOverWebsocket(chatUpdate)
+  sendWsRequest(wsRequest)
 }
 
 const leaveChat = () => window.location.reload()

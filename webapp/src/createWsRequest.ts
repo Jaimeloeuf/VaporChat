@@ -1,17 +1,17 @@
 import { useAnonymousUser } from './useAnonymousUser'
-import type { BaseChatUpdate, ChatUpdate } from './ChatUpdate'
+import type { BaseWsRequest, WsRequest } from './WsRequest'
 
 // Helper type to check if an object has no keys
 type Prettify<T> = { [K in keyof T]: T[K] } & {}
-type ExtraFields<T extends ChatUpdate['type']> = Prettify<
-  Omit<Extract<ChatUpdate, { type: T }>, keyof BaseChatUpdate>
+type ExtraFields<T extends WsRequest['type']> = Prettify<
+  Omit<Extract<WsRequest, { type: T }>, keyof BaseWsRequest>
 >
 
-export function createChatUpdate<T extends ChatUpdate['type']>(
+export function createWsRequest<T extends WsRequest['type']>(
   ...args: ExtraFields<T> extends Record<string, never>
     ? [type: T]
     : [type: T, additionalData: ExtraFields<T>]
-): Extract<ChatUpdate, { type: T }> {
+): Extract<WsRequest, { type: T }> {
   const [type, additionalData] = args
   const { userID, readonlyUsername } = useAnonymousUser()
   return {
@@ -21,5 +21,5 @@ export function createChatUpdate<T extends ChatUpdate['type']>(
     username: readonlyUsername.value,
     type,
     ...(additionalData || {}),
-  } as Extract<ChatUpdate, { type: T }>
+  } as Extract<WsRequest, { type: T }>
 }
