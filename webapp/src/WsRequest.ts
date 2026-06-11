@@ -1,71 +1,89 @@
-import type { ChatConfig } from './ChatConfig'
+import { z } from 'zod'
+import { ChatConfigSchema } from './ChatConfig'
 
-export interface BaseWsRequest {
-  id: string
-  timestamp: string
-  userID: string
-  username: string
+const BaseWsRequestSchema = z.object({
+  id: z.uuidv4(),
+  timestamp: z.number().int().positive(),
+  userID: z.uuidv4(),
+  username: z.string().nonempty(),
 
-  // To override in subtypes with a string literal
-  type: string
-}
+  /**
+   * To override in subtypes with a string literal
+   */
+  type: z.string().nonempty(),
+})
+export type BaseWsRequest = z.infer<typeof BaseWsRequestSchema>
 
-export interface WsRequestRoomCreate extends BaseWsRequest {
-  type: 'room-create'
-  payload: {
-    chatConfig: ChatConfig
-  }
-}
+export const WsRequestRoomCreateSchema = BaseWsRequestSchema.extend({
+  type: z.literal('room-create'),
+  payload: z.object({
+    chatConfig: ChatConfigSchema,
+  }),
+})
+export type WsRequestRoomCreate = z.infer<typeof WsRequestRoomCreateSchema>
 
-export interface WsRequestRoomDestroy extends BaseWsRequest {
-  type: 'room-destroy'
-  payload: {
-    roomID: string
-  }
-}
+export const WsRequestRoomDestroySchema = BaseWsRequestSchema.extend({
+  type: z.literal('room-destroy'),
+  payload: z.object({
+    roomID: z.uuidv4(),
+  }),
+})
+export type WsRequestRoomDestroy = z.infer<typeof WsRequestRoomDestroySchema>
 
-export interface WsRequestNewStatusJoinRoom extends BaseWsRequest {
-  type: 'status-join-room'
-  payload: {
-    roomID: string
-  }
-}
+export const WsRequestNewStatusJoinRoomSchema = BaseWsRequestSchema.extend({
+  type: z.literal('status-join-room'),
+  payload: z.object({
+    roomID: z.uuidv4(),
+  }),
+})
+export type WsRequestNewStatusJoinRoom = z.infer<typeof WsRequestNewStatusJoinRoomSchema>
 
-export interface WsRequestNewStatusLeaveRoom extends BaseWsRequest {
-  type: 'status-leave-room'
-  payload: {
-    roomID: string
-  }
-}
+export const WsRequestNewStatusLeaveRoomSchema = BaseWsRequestSchema.extend({
+  type: z.literal('status-leave-room'),
+  payload: z.object({
+    roomID: z.uuidv4(),
+  }),
+})
+export type WsRequestNewStatusLeaveRoom = z.infer<typeof WsRequestNewStatusLeaveRoomSchema>
 
 // @todo In UI show for 2s from the last time of receiving this update
-export interface WsRequestTyping extends BaseWsRequest {
-  type: 'typing'
-}
+export const WsRequestTypingSchema = BaseWsRequestSchema.extend({
+  type: z.literal('typing'),
+})
+export type WsRequestTyping = z.infer<typeof WsRequestTypingSchema>
 
-export interface WsRequestMessageNew extends BaseWsRequest {
-  type: 'message-new'
-  payload: {
-    roomID: string
-    message: string
-  }
-}
+export const WsRequestMessageNewSchema = BaseWsRequestSchema.extend({
+  type: z.literal('message-new'),
+  payload: z.object({
+    roomID: z.uuidv4(),
+    message: z.string(),
+  }),
+})
+export type WsRequestMessageNew = z.infer<typeof WsRequestMessageNewSchema>
 
-export interface WsRequestMessageDelete extends BaseWsRequest {
-  type: 'message-delete'
-  payload: {
-    messageID: string
-  }
-}
+export const WsRequestMessageDeleteSchema = BaseWsRequestSchema.extend({
+  type: z.literal('message-delete'),
+  payload: z.object({
+    roomID: z.uuidv4(),
+    messageID: z.uuidv4(),
+  }),
+})
+export type WsRequestMessageDelete = z.infer<typeof WsRequestMessageDeleteSchema>
+
+/**
+ * Zod discriminated union for efficient request routing and parsing
+ */
+export const WsRequestSchema = z.discriminatedUnion('type', [
+  WsRequestRoomCreateSchema,
+  WsRequestRoomDestroySchema,
+  WsRequestNewStatusJoinRoomSchema,
+  WsRequestNewStatusLeaveRoomSchema,
+  WsRequestTypingSchema,
+  WsRequestMessageNewSchema,
+  WsRequestMessageDeleteSchema,
+])
 
 /**
  * `WebSocket Request` is what the client sends to the server
  */
-export type WsRequest =
-  | WsRequestRoomCreate
-  | WsRequestRoomDestroy
-  | WsRequestNewStatusJoinRoom
-  | WsRequestNewStatusLeaveRoom
-  | WsRequestTyping
-  | WsRequestMessageNew
-  | WsRequestMessageDelete
+export type WsRequest = z.infer<typeof WsRequestSchema>
