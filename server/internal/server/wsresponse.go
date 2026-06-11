@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// "WebSocket Response Envelope" is the struct for server to client.
 type WsResponseEnvelope struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`

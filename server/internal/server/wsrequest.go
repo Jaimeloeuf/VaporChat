@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// "WebSocket Request Envelope" is the struct for client to server.
 type WsRequestEnvelope struct {
 	ID        string          `json:"id"`
 	Timestamp string          `json:"timestamp"`
