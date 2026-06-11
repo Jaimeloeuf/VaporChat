@@ -72,7 +72,7 @@ func websocketReaderLoop(websocketConnection *websocket.Conn) {
 
 			log.Printf("[Status] Created room at %s\n", newChatRoom.ID)
 
-			err = CreateNewWsResponseAndSendIt(websocketConnection, "system", WsRequestPayloadRoomCreated{
+			err = CreateNewWsResponseAndSendIt(websocketConnection, "system", WsResponsePayloadRoomCreated{
 				RoomID: newChatRoom.ID,
 			})
 
